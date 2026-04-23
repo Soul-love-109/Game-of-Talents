@@ -1,0 +1,2329 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Зажги Свою Звезду ✨</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a1a;
+            --bg-medium: #121230;
+            --bg-card: #1a1a3e;
+            --purple-deep: #2d1b69;
+            --purple-mid: #6b3fa0;
+            --purple-light: #9b6dd7;
+            --gold: #ffd700;
+            --gold-light: #ffed4a;
+            --gold-dark: #b8960c;
+            --text-light: #e8e0ff;
+            --text-muted: #a89ec8;
+            --treasure-bg: #1a2744;
+            --treasure-accent: #4a9eff;
+            --strength-bg: #2d1040;
+            --strength-accent: #c74bff;
+            --help-bg: #1a3020;
+            --help-accent: #4bff8e;
+            --energy-bg: #2a1a0a;
+            --energy-accent: #ff9f43;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Starfield Background */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: var(--min-opacity); transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        .nebula {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .nebula-1 {
+            top: -200px;
+            right: -200px;
+            background: radial-gradient(circle, #6b3fa0, #2d1b69, transparent);
+        }
+
+        .nebula-2 {
+            bottom: -200px;
+            left: -200px;
+            background: radial-gradient(circle, #4a9eff, #1a2744, transparent);
+        }
+
+        .nebula-3 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, #c74bff, #2d1040, transparent);
+            width: 800px;
+            height: 800px;
+            opacity: 0.08;
+        }
+
+        /* Main Container */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(10,10,26,0.95) 0%, transparent 100%);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-family: 'Comfortaa', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Game Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 10px 20px;
+            flex-wrap: wrap;
+            background: rgba(18, 18, 48, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(107, 63, 160, 0.3);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .stat-icon {
+            font-size: 1.2rem;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--gold);
+            font-family: 'Comfortaa', sans-serif;
+        }
+
+        /* Player Selector */
+        .player-bar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 20px;
+            flex-wrap: wrap;
+            background: rgba(18, 18, 48, 0.6);
+        }
+
+        .player-btn {
+            padding: 8px 16px;
+            border: 2px solid rgba(107, 63, 160, 0.4);
+            background: rgba(26, 26, 62, 0.6);
+            color: var(--text-muted);
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .player-btn.active {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .player-btn:hover {
+            border-color: var(--purple-light);
+            color: var(--text-light);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Dice Section */
+        .dice-section {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .dice-container {
+            perspective: 600px;
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+            cursor: pointer;
+        }
+
+        .dice {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .dice.rolling {
+            animation: diceRoll 1.2s ease-out;
+        }
+
+        @keyframes diceRoll {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            20% { transform: rotateX(180deg) rotateY(90deg) rotateZ(45deg); }
+            40% { transform: rotateX(360deg) rotateY(180deg) rotateZ(90deg); }
+            60% { transform: rotateX(540deg) rotateY(270deg) rotateZ(135deg); }
+            80% { transform: rotateX(680deg) rotateY(350deg) rotateZ(170deg); }
+            100% { transform: rotateX(var(--final-x)) rotateY(var(--final-y)) rotateZ(var(--final-z)); }
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(145deg, #2a2a5e, #1a1a3e);
+            border: 2px solid rgba(155, 109, 215, 0.4);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            font-family: 'Comfortaa', sans-serif;
+            box-shadow: 0 0 20px rgba(107, 63, 160, 0.3), inset 0 0 20px rgba(107, 63, 160, 0.1);
+        }
+
+        .dice-face:nth-child(1) { transform: translateZ(50px); }
+        .dice-face:nth-child(2) { transform: rotateY(180deg) translateZ(50px); }
+        .dice-face:nth-child(3) { transform: rotateY(90deg) translateZ(50px); }
+        .dice-face:nth-child(4) { transform: rotateY(-90deg) translateZ(50px); }
+        .dice-face:nth-child(5) { transform: rotateX(90deg) translateZ(50px); }
+        .dice-face:nth-child(6) { transform: rotateX(-90deg) translateZ(50px); }
+
+        .dice-dots {
+            display: grid;
+            width: 60px;
+            height: 60px;
+            align-items: center;
+            justify-items: center;
+        }
+
+        .dice-dot {
+            width: 14px;
+            height: 14px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--gold);
+        }
+
+        .roll-btn {
+            padding: 14px 40px;
+            font-size: 1.1rem;
+            font-family: 'Comfortaa', sans-serif;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--purple-mid), var(--purple-deep));
+            color: var(--gold);
+            border: 2px solid var(--gold-dark);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roll-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.2), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .roll-btn:hover::before {
+            opacity: 1;
+        }
+
+        .roll-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(107, 63, 160, 0.4), 0 0 30px rgba(255, 215, 0, 0.2);
+        }
+
+        .roll-btn:active {
+            transform: translateY(0);
+        }
+
+        .roll-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Card Display */
+        .card-display {
+            width: 100%;
+            max-width: 500px;
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 100%;
+            background: linear-gradient(145deg, var(--bg-card), rgba(26, 26, 62, 0.8));
+            border-radius: 20px;
+            border: 2px solid rgba(107, 63, 160, 0.4);
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(107, 63, 160, 0.15);
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .card.treasure {
+            border-color: rgba(74, 158, 255, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(74, 158, 255, 0.15);
+        }
+
+        .card.strength {
+            border-color: rgba(199, 75, 255, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(199, 75, 255, 0.15);
+        }
+
+        .card.help {
+            border-color: rgba(75, 255, 142, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(75, 255, 142, 0.15);
+        }
+
+        .card-image-container {
+            width: 100%;
+            height: 160px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(transparent, var(--bg-card));
+        }
+
+        .card-header {
+            padding: 15px 20px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-type-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card.treasure .card-type-badge {
+            background: rgba(74, 158, 255, 0.2);
+            color: var(--treasure-accent);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+        }
+
+        .card.strength .card-type-badge {
+            background: rgba(199, 75, 255, 0.2);
+            color: var(--strength-accent);
+            border: 1px solid rgba(199, 75, 255, 0.3);
+        }
+
+        .card.help .card-type-badge {
+            background: rgba(75, 255, 142, 0.2);
+            color: var(--help-accent);
+            border: 1px solid rgba(75, 255, 142, 0.3);
+        }
+
+        .card-number {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 0 20px 20px;
+        }
+
+        .card-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text-light);
+        }
+
+        .card-practice {
+            margin-top: 12px;
+            padding: 12px 15px;
+            background: rgba(255, 215, 0, 0.05);
+            border-left: 3px solid var(--gold-dark);
+            border-radius: 0 10px 10px 0;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .card-practice::before {
+            content: '🌟 Практика: ';
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* No card state */
+        .no-card {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .no-card-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .no-card p {
+            font-size: 1.1rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-talent {
+            background: rgba(74, 158, 255, 0.15);
+            color: var(--treasure-accent);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+        }
+
+        .btn-talent:hover {
+            background: rgba(74, 158, 255, 0.25);
+            box-shadow: 0 0 15px rgba(74, 158, 255, 0.2);
+        }
+
+        .btn-project {
+            background: rgba(199, 75, 255, 0.15);
+            color: var(--strength-accent);
+            border: 1px solid rgba(199, 75, 255, 0.3);
+        }
+
+        .btn-project:hover {
+            background: rgba(199, 75, 255, 0.25);
+            box-shadow: 0 0 15px rgba(199, 75, 255, 0.2);
+        }
+
+        .btn-energy {
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--gold);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-energy:hover {
+            background: rgba(255, 215, 0, 0.25);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-reset {
+            background: rgba(255, 80, 80, 0.15);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 80, 80, 0.3);
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 80, 80, 0.25);
+            box-shadow: 0 0 15px rgba(255, 80, 80, 0.2);
+        }
+
+        .btn-help {
+            background: rgba(75, 255, 142, 0.15);
+            color: var(--help-accent);
+            border: 1px solid rgba(75, 255, 142, 0.3);
+        }
+
+        .btn-help:hover {
+            background: rgba(75, 255, 142, 0.25);
+            box-shadow: 0 0 15px rgba(75, 255, 142, 0.2);
+        }
+
+        /* History Section */
+        .history-section {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .history-title {
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--purple-mid) transparent;
+        }
+
+        .history-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .history-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .history-list::-webkit-scrollbar-thumb {
+            background: var(--purple-mid);
+            border-radius: 3px;
+        }
+
+        .history-item {
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background: rgba(26, 26, 62, 0.5);
+            border-radius: 12px;
+            border-left: 3px solid var(--purple-mid);
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            background: rgba(26, 26, 62, 0.8);
+            transform: translateX(5px);
+        }
+
+        .history-item.treasure {
+            border-left-color: var(--treasure-accent);
+        }
+
+        .history-item.strength {
+            border-left-color: var(--strength-accent);
+        }
+
+        .history-item.help {
+            border-left-color: var(--help-accent);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .history-item-type {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 8px;
+        }
+
+        .history-item.treasure .history-item-type {
+            background: rgba(74, 158, 255, 0.2);
+            color: var(--treasure-accent);
+        }
+
+        .history-item.strength .history-item-type {
+            background: rgba(199, 75, 255, 0.2);
+            color: var(--strength-accent);
+        }
+
+        .history-item.help .history-item-type {
+            background: rgba(75, 255, 142, 0.2);
+            color: var(--help-accent);
+        }
+
+        .history-item-turn {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .history-item-text {
+            color: var(--text-light);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Talents & Projects Panel */
+        .panel-section {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .panel-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .panel-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border: none;
+            background: rgba(26, 26, 62, 0.5);
+            color: var(--text-muted);
+            border-radius: 12px 12px 0 0;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .panel-tab.active {
+            background: rgba(26, 26, 62, 0.8);
+            color: var(--gold);
+        }
+
+        .panel-content {
+            background: rgba(26, 26, 62, 0.5);
+            border-radius: 0 12px 12px 12px;
+            padding: 15px;
+            min-height: 100px;
+        }
+
+        .panel-list {
+            list-style: none;
+        }
+
+        .panel-list li {
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            background: rgba(45, 27, 105, 0.3);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-list li .remove-item {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 1.1rem;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .panel-list li .remove-item:hover {
+            opacity: 1;
+        }
+
+        .empty-panel {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        /* Input Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: linear-gradient(145deg, var(--bg-card), var(--bg-medium));
+            border-radius: 20px;
+            border: 2px solid rgba(107, 63, 160, 0.4);
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal h3 {
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--gold);
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(26, 26, 62, 0.8);
+            border: 2px solid rgba(107, 63, 160, 0.3);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .modal-input:focus {
+            border-color: var(--gold);
+        }
+
+        .modal-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+        }
+
+        .modal-btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .modal-btn-confirm {
+            background: linear-gradient(135deg, var(--purple-mid), var(--purple-deep));
+            color: var(--gold);
+            border: 1px solid var(--gold-dark);
+        }
+
+        .modal-btn-confirm:hover {
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+        /* Start Screen */
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--purple-deep) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .start-screen.hidden {
+            display: none;
+        }
+
+        .start-title {
+            font-family: 'Comfortaa', sans-serif;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .start-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .start-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 30px;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .player-count-selector {
+            margin-bottom: 25px;
+        }
+
+        .player-count-selector label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .player-count-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .player-count-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid rgba(107, 63, 160, 0.4);
+            background: rgba(26, 26, 62, 0.6);
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'Comfortaa', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .player-count-btn.active {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .start-btn {
+            padding: 16px 50px;
+            font-size: 1.2rem;
+            font-family: 'Comfortaa', sans-serif;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Particle effects */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 999;
+            border-radius: 50%;
+            animation: particleFly 1s ease-out forwards;
+        }
+
+        @keyframes particleFly {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, var(--purple-mid), var(--purple-deep));
+            color: var(--gold);
+            padding: 12px 25px;
+            border-radius: 20px;
+            border: 1px solid var(--gold-dark);
+            font-weight: 600;
+            z-index: 1001;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            white-space: nowrap;
+        }
+
+        .toast.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Help Friend Modal */
+        .help-modal-content {
+            text-align: center;
+        }
+
+        .help-modal-content p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .help-player-select {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .help-player-btn {
+            padding: 8px 16px;
+            border: 2px solid rgba(75, 255, 142, 0.3);
+            background: rgba(26, 48, 32, 0.6);
+            color: var(--help-accent);
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .help-player-btn:hover, .help-player-btn.active {
+            background: rgba(75, 255, 142, 0.2);
+            box-shadow: 0 0 15px rgba(75, 255, 142, 0.2);
+        }
+
+        .help-action {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(75, 255, 142, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(75, 255, 142, 0.2);
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Rules Modal */
+        .rules-content {
+            max-height: 60vh;
+            overflow-y: auto;
+            text-align: left;
+            line-height: 1.7;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .rules-content h4 {
+            color: var(--gold);
+            font-family: 'Comfortaa', sans-serif;
+            margin: 15px 0 8px;
+            font-size: 1rem;
+        }
+
+        .rules-content p, .rules-content li {
+            margin-bottom: 8px;
+        }
+
+        .rules-content ul {
+            padding-left: 20px;
+        }
+
+        /* Source Connection Animation */
+        .source-connection {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 998;
+            display: none;
+        }
+
+        .source-connection.active {
+            display: block;
+        }
+
+        .source-ray {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+            transform-origin: top center;
+            animation: rayGrow 1.5s ease-out forwards;
+        }
+
+        @keyframes rayGrow {
+            0% { height: 0; opacity: 0; }
+            50% { height: 200px; opacity: 1; }
+            100% { height: 0; opacity: 0; }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .stats-bar {
+                gap: 10px;
+                font-size: 0.8rem;
+            }
+
+            .dice-container {
+                width: 100px;
+                height: 100px;
+            }
+
+            .dice-face {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+                border-radius: 12px;
+            }
+
+            .dice-face:nth-child(1) { transform: translateZ(40px); }
+            .dice-face:nth-child(2) { transform: rotateY(180deg) translateZ(40px); }
+            .dice-face:nth-child(3) { transform: rotateY(90deg) translateZ(40px); }
+            .dice-face:nth-child(4) { transform: rotateY(-90deg) translateZ(40px); }
+            .dice-face:nth-child(5) { transform: rotateX(90deg) translateZ(40px); }
+            .dice-face:nth-child(6) { transform: rotateX(-90deg) translateZ(40px); }
+
+            .card-image-container {
+                height: 120px;
+            }
+
+            .action-buttons {
+                gap: 8px;
+            }
+
+            .action-btn {
+                padding: 8px 14px;
+                font-size: 0.8rem;
+            }
+
+            .roll-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+
+            .start-title {
+                font-size: 1.8rem;
+            }
+
+            .start-image {
+                width: 150px;
+                height: 150px;
+            }
+
+            .modal {
+                padding: 20px;
+            }
+        }
+
+        /* Confetti for double 6 */
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            z-index: 997;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        /* Second roll indicator */
+        .second-roll-indicator {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            margin-top: 10px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .second-roll-indicator.visible {
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(107, 63, 160, 0.2);
+            margin-top: auto;
+        }
+
+        /* Shuffle animation */
+        .card-shuffling {
+            animation: shuffleCard 0.5s ease-in-out;
+        }
+
+        @keyframes shuffleCard {
+            0% { transform: translateX(0) rotateY(0); }
+            25% { transform: translateX(-30px) rotateY(-10deg); }
+            50% { transform: translateX(0) rotateY(0); }
+            75% { transform: translateX(30px) rotateY(10deg); }
+            100% { transform: translateX(0) rotateY(0); }
+        }
+
+        /* Energy token animation */
+        .energy-burst {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .energy-burst-ring {
+            position: absolute;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            animation: burstRing 1s ease-out forwards;
+        }
+
+        @keyframes burstRing {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            100% {
+                width: 300px;
+                height: 300px;
+                opacity: 0;
+                margin-top: -150px;
+                margin-left: -150px;
+            }
+        }
+
+        /* Tab content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+    <div class="nebula nebula-3"></div>
+
+    <!-- Source Connection Animation -->
+    <div class="source-connection" id="sourceConnection"></div>
+
+    <!-- Start Screen -->
+    <div class="start-screen" id="startScreen">
+        <img src="https://image.qwenlm.ai/public_source/b1ce62eb-c782-4ea8-af5b-05a4df662677/1768d8ac9-464b-4f79-a56d-e011dbae749d.png" alt="Звезда" class="start-image">
+        <h1 class="start-title">✨ Зажги Свою Звезду ✨</h1>
+        <p class="start-subtitle">Мы не соревнуемся — мы помогаем друг другу раскрыть уникальные дары</p>
+        <div class="player-count-selector">
+            <label>Количество игроков:</label>
+            <div class="player-count-buttons">
+                <button class="player-count-btn" data-count="1">1</button>
+                <button class="player-count-btn active" data-count="2">2</button>
+                <button class="player-count-btn" data-count="3">3</button>
+                <button class="player-count-btn" data-count="4">4</button>
+                <button class="player-count-btn" data-count="5">5</button>
+                <button class="player-count-btn" data-count="6">6</button>
+            </div>
+        </div>
+        <button class="start-btn" id="startBtn">Начать Игру</button>
+        <p style="margin-top: 20px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer;" id="showRulesBtn">📜 Правила игры</p>
+    </div>
+
+    <!-- Rules Modal -->
+    <div class="modal-overlay" id="rulesModal">
+        <div class="modal" style="max-width: 550px;">
+            <h3>📜 Правила Игры «Зажги Свою Звезду»</h3>
+            <div class="rules-content">
+                <p>В этой игре мы не соревнуемся, а помогаем друг другу раскрыть наши уникальные дары. Здесь нет проигравших — есть только звёзды, которые разгораются ярче!</p>
+                <h4>🎯 Цель</h4>
+                <p>Каждый игрок раскрывает свои таланты и создаёт проект мечты.</p>
+                <h4>🎲 Ход Игры</h4>
+                <ul>
+                    <li><b>1–3</b> → Карта из колоды «Карта Сокровищ»</li>
+                    <li><b>4–5</b> → Карта из колоды «Пробуждение Силы»</li>
+                    <li><b>6</b> → «Помощь Другу» + бросок ещё раз. Если снова 6 — контакт с Источником! Получи «Энергию Любви» ⭐</li>
+                </ul>
+                <h4> Запись</h4>
+                <p>За каждый записанный талант или проект получи «Энергию Любви» </p>
+                <h4> Завершение</h4>
+                <p>Когда каждый раскрыл хотя бы один талант и создал проект — игра завершена!</p>
+            </div>
+            <div class="modal-buttons" style="margin-top: 15px;">
+                <button class="modal-btn modal-btn-confirm" onclick="closeRulesModal()">Понятно!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="appContainer" style="display: none;">
+        <!-- Header -->
+        <div class="header">
+            <h1>✨ Зажги Свою Звезду </h1>
+            <p class="header-subtitle">Мы исследуем свою тьму со светом Любви</p>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-icon">🎲</span>
+                <span>Раунд:</span>
+                <span class="stat-value" id="roundCount">1</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">⭐</span>
+                <span>Энергия Любви:</span>
+                <span class="stat-value" id="energyCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">💎</span>
+                <span>Талантов:</span>
+                <span class="stat-value" id="talentCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">🚀</span>
+                <span>Проектов:</span>
+                <span class="stat-value" id="projectCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">🃏</span>
+                <span>Карт:</span>
+                <span class="stat-value" id="cardsDrawn">0</span>
+            </div>
+        </div>
+
+        <!-- Player Bar -->
+        <div class="player-bar" id="playerBar">
+            <!-- Players will be added here -->
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dice Section -->
+            <div class="dice-section">
+                <div class="dice-container" id="diceContainer" onclick="rollDice()">
+                    <div class="dice" id="dice">
+                        <div class="dice-face" style="transform: translateZ(50px);">
+                            <div class="dice-dots" id="face1"></div>
+                        </div>
+                        <div class="dice-face" style="transform: rotateY(180deg) translateZ(50px);">
+                            <div class="dice-dots" id="face2"></div>
+                        </div>
+                        <div class="dice-face" style="transform: rotateY(90deg) translateZ(50px);">
+                            <div class="dice-dots" id="face3"></div>
+                        </div>
+                        <div class="dice-face" style="transform: rotateY(-90deg) translateZ(50px);">
+                            <div class="dice-dots" id="face4"></div>
+                        </div>
+                        <div class="dice-face" style="transform: rotateX(90deg) translateZ(50px);">
+                            <div class="dice-dots" id="face5"></div>
+                        </div>
+                        <div class="dice-face" style="transform: rotateX(-90deg) translateZ(50px);">
+                            <div class="dice-dots" id="face6"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="roll-btn" id="rollBtn" onclick="rollDice()">🎲 Бросить Кубик</button>
+                <div class="second-roll-indicator" id="secondRollIndicator">
+                    ✨ Выпала 6! Бросьте кубик ещё раз для контакта с Источником!
+                </div>
+            </div>
+
+            <!-- Card Display -->
+            <div class="card-display">
+                <div id="cardArea">
+                    <div class="no-card" id="noCard">
+                        <div class="no-card-icon">🌌</div>
+                        <p>Бросьте кубик, чтобы вытянуть карту</p>
+                    </div>
+                    <div class="card" id="card">
+                        <div class="card-image-container">
+                            <img class="card-image" id="cardImage" src="" alt="Карта">
+                            <div class="card-image-overlay"></div>
+                        </div>
+                        <div class="card-header">
+                            <span class="card-type-badge" id="cardTypeBadge">Колода</span>
+                            <span class="card-number" id="cardNumber">#1</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text" id="cardText">Текст карты</p>
+                            <div class="card-practice" id="cardPractice" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons" id="actionButtons">
+                <button class="action-btn btn-talent" onclick="openModal('talent')">💎 Записать Талант</button>
+                <button class="action-btn btn-project" onclick="openModal('project')">🚀 Записать Проект</button>
+                <button class="action-btn btn-energy" onclick="addEnergy()">⭐ + Энергия Любви</button>
+                <button class="action-btn btn-reset" onclick="resetGame()">🔄 Начать Заново</button>
+            </div>
+
+            <!-- History Section -->
+            <div class="history-section">
+                <div class="history-header">
+                    <span class="history-title">📜 История Карт</span>
+                    <span class="history-title" id="historyCount">0 карт</span>
+                </div>
+                <div class="history-list" id="historyList">
+                    <!-- History items will be added here -->
+                </div>
+            </div>
+
+            <!-- Talents & Projects Panel -->
+            <div class="panel-section">
+                <div class="panel-tabs">
+                    <button class="panel-tab active" onclick="switchPanel('talents')">💎 Мои Таланты</button>
+                    <button class="panel-tab" onclick="switchPanel('projects')"> Мои Проекты</button>
+                </div>
+                <div class="panel-content">
+                    <div class="tab-content active" id="talentsPanel">
+                        <ul class="panel-list" id="talentsList">
+                            <li class="empty-panel">Запишите свой первый талант! ✨</li>
+                        </ul>
+                    </div>
+                    <div class="tab-content" id="projectsPanel">
+                        <ul class="panel-list" id="projectsList">
+                            <li class="empty-panel">Запишите свой первый проект! 🚀</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>✨ Здесь нет неправильных ответов. Твоя правда — это самая большая ценность ✨</p>
+        </div>
+    </div>
+
+    <!-- Input Modal -->
+    <div class="modal-overlay" id="inputModal">
+        <div class="modal">
+            <h3 id="modalTitle">Записать</h3>
+            <input type="text" class="modal-input" id="modalInput" placeholder="Введите...">
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Отмена</button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmModal()">Записать</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Friend Modal -->
+    <div class="modal-overlay" id="helpModal">
+        <div class="modal">
+            <h3> Помощь Другу</h3>
+            <div class="help-modal-content">
+                <p>Выберите игрока, которому хотите помочь. Вы можете помочь словом, советом, поддержкой или просто обнимашками! 💛</p>
+                <div class="help-player-select" id="helpPlayerSelect">
+                    <!-- Player buttons will be added here -->
+                </div>
+                <div class="help-action" id="helpAction" style="display: none;">
+                    <!-- Help action info -->
+                </div>
+            </div>
+            <div class="modal-buttons" style="margin-top: 15px;">
+                <button class="modal-btn modal-btn-cancel" onclick="closeHelpModal()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============================================
+        // DATA: Card Decks
+        // ============================================
+
+        const TREASURE_DECK = [
+            { num: 1, text: "За что тебя часто ругали в детстве?" },
+            { num: 2, text: "В чем твоя самая большая слабость?" },
+            { num: 3, text: "Чего ты больше всего стыдишься?" },
+            { num: 4, text: "Чего ты больше всего боишься?" },
+            { num: 5, text: "Что дается тебе легко, а ты не считаешь это чем-то особенным?" },
+            { num: 6, text: "За что тебя благодарят люди?" },
+            { num: 7, text: "Когда ты чувствуешь в себе огонь жизни по-настоящему? Вспомни 3 таких момента!" },
+            { num: 8, text: "Что ты хочешь делать постоянно, не уставая?" },
+            { num: 9, text: "Какой процесс затягивает тебя целиком и там нет места мыслям?" },
+            { num: 10, text: "Что ты делаешь, чтобы отдохнуть и наполниться энергией?" },
+            { num: 11, text: "Какие таланты тебе подарила природа?" },
+            { num: 12, text: "Что такое бесполезное ты любишь делать просто так, нипочему?" },
+            { num: 13, text: "О чем ты мечтаешь снова и снова?" },
+            { num: 14, text: "Представь, что ты супергерой. Какой, что ты делаешь, какова твоя сила?" },
+            { num: 15, text: "Что у тебя всегда случается легко? Где по жизни никогда не приходится стараться?" },
+            { num: 16, text: "Как люди меняются рядом с тобой? Что в них оживает?" },
+            { num: 17, text: "За чем к тебе чаще всего приходят люди (друзья, семья или даже незнакомцы)?" },
+            { num: 18, text: "За что тебя чаще всего благодарят люди (друзья, семья или даже незнакомцы)?" },
+            { num: 19, text: "Как ты можешь соединять людей, идеи?" },
+            { num: 20, text: "Если бы тебя попросили научить чему-то ребенка, что бы это было?" },
+            { num: 21, text: "Что подмечают в тебе люди, что ты не считаешь чем-то особенным?" },
+            { num: 22, text: "Как и что любят творить твои руки?" },
+            { num: 23, text: "Какое движение приносит твоему телу радость?" },
+            { num: 24, text: "Что ты создаешь, когда тебе скучно?" },
+            { num: 25, text: "Что ты делаешь и прямо теряешь счет времени?" },
+            { num: 26, text: "Что наполняет тебя энергией, несмотря на усталость?" },
+            { num: 27, text: "Представь, что ты стоишь на сцене, и весь мир тебя слушает. О чем ты говоришь?" },
+            { num: 28, text: "Если бы у тебя было бесконечно времени и ресурсов, что бы ты делал(а)?" },
+            { num: 29, text: "Какой образ у тебя всплывает, когда ты слышишь слово «Дар»?" },
+            { num: 30, text: "Какой твой «долг» может оказаться твоим нераскрытым талантом?" },
+            { num: 31, text: "Что ты делаешь, когда ленишься?" },
+            { num: 32, text: "Каким/какой ты становишься рядом с теми, кого любишь?" },
+            { num: 33, text: "Что в твоей жизни всегда случается само, без усилий?" },
+            { num: 34, text: "Что ты продолжаешь делать, даже когда нет результата?" },
+            { num: 35, text: "Какое твое качество ты больше всего недооцениваешь?" },
+            { num: 36, text: "Что у других всегда случается в твоем присутствии?" },
+            { num: 37, text: "Какая игра тебе нравилась больше всего в детстве?" },
+            { num: 38, text: "Где, когда и рядом с кем ты чувствуешь себя максимально расслабленно?" },
+            { num: 39, text: "«Душа моя, как я могу порадовать тебя прямо сейчас?»" },
+            { num: 40, text: "Если бы все твои желания уже сбылись, что бы ты делал(а) после этого? Как бы выглядел твой день?" },
+            { num: 41, text: "Если бы вопрос денег был решен навсегда, как бы ты проводил(а) свои дни?" },
+            { num: 42, text: "Какой навык тебе удалось освоить неожиданно легко?" },
+            { num: 43, text: "В какой роли ты чувствуешь себя гармонично и естественно? Например, организатор, слушатель, творец, целитель и так далее." },
+            { num: 44, text: "Что ты делаешь, когда хочешь сделать приятно себе или близким?" },
+            { num: 45, text: "Если бы твоя душа могла выразить себя одним действием, что бы это было?" },
+            { num: 46, text: "Что ты такого замечаешь в людях и ситуациях, что ускользает от взгляда других?" },
+            { num: 47, text: "Что ты можешь делать снова и снова, и тебе не становится скучно?" },
+            { num: 48, text: "«Что мне сегодня подсказывает Источник мой?»" },
+            { num: 49, text: "«Источник мой, куда мне направить мое внимание прямо сейчас?»" },
+            { num: 50, text: "«Источник мой, куда я сейчас сливаю свою энергию?»" },
+            { num: 51, text: "«Источник мой, как мне прямо сейчас наполниться энергией?»" },
+            { num: 52, text: "«Источник мой, как мне жить так, чтобы жизнь во мне увеличивалась?»" },
+            { num: 53, text: "«Тело мое, что ты мне сейчас подсказываешь?»" },
+            { num: 54, text: "Что ты в себе обесцениваешь?" },
+            { num: 55, text: "Как ты ощущаешь себя, когда ничего не делаешь?" },
+            { num: 56, text: "Представь, что у тебя есть абсолютная свобода быть собой. Как бы ты жил(а)? Что бы делал(а)?" },
+            { num: 57, text: "Что тебя радует? Вспомни 10 пунктов из твоего списка радостей." },
+            { num: 58, text: "Вспомни три момента, когда время просто исчезло. Что ты делал(а) тогда?" },
+            { num: 59, text: "За 3 минуты создай из любых подручных материалов то, что передает твое текущее состояние. Это может быть каракуля, стих, фото, мелодия, что приходит тебе в потоке." },
+            { num: 60, text: "Закрой глаза и представь свой главный дар. Каких он цветов? Закрась этими цветами целый лист. Прочувствуй энергию твоего Таланта!" },
+            { num: 61, text: "Встань и прими позу, которая, по твоим ощущениям, отражает твой скрытый талант. Замри и прислушайся к ощущениям в теле." },
+            { num: 62, text: "Встань и подвигайся так, как тебе идет. Можешь включить любимую музыку и подключить к танцу любых игроков." },
+            { num: 63, text: "Пройдись так, как ходил бы человек, который полностью уверен в своем таланте. Что изменилось в твоей осанке, в шагах?" },
+            { num: 64, text: "Издай звук (не слово!), который выражает твою внутреннюю силу. Это может быть рык, напев, шепот, гудение... Повтори его несколько раз, чувствуя вибрацию в теле." },
+            { num: 65, text: "Придумай и спой короткую рекламную песенку о своем таланте. Можно смешно и несерьезно!" },
+            { num: 66, text: "Надиктуй на диктофон 2-3 фразы, которые приходят тебе в голову, когда ты представляешь себя в состоянии полного счастья и реализации твоих талантов. Что ты почувствуешь тогда?" },
+            { num: 67, text: "Отбей ладонями ритм, который мог бы быть саундтреком к проявлению твоего дара." },
+            { num: 68, text: "Потри ладони друг о друга 30 секунд, а затем медленно разведи их, ощущая энергетическое поле между ними. Это поле — твоя сила. Что ты чувствуешь?" },
+            { num: 69, text: "Закрой глаза. Представь, что ты держишь в руках свой талант как реальный предмет. Какой он на ощупь? Тяжелый или легкий? Теплый или холодный? Затем подари его любому игроку." },
+            { num: 70, text: "Возьми любой журнал или газету и ножницы. Не думая, вырежи 3-5 картинок, которые цепляют тебя. Создай из них маленький коллаж. Что ты в нем видишь?" },
+            { num: 71, text: "Поставь два стула. На один сядь сам, на другом представь свою «тень» — ту часть тебя, которую ты обычно скрываешь. Задай ей вопрос: «Какой Дар ты для меня хранишь?». Что она отвечает тебе?" },
+            { num: 72, text: "Выбери один маленький уголок в комнате или папку в телефоне и наведи там порядок. Делая это, представляй что ты расчищаешь пространство для своего таланта." },
+            { num: 73, text: "Встань перед зеркалом. Посмотри себе в глаза и искренне вслух поблагодари себя за один конкретный навык или качество." },
+            { num: 74, text: "Представь, что ты из будущего, где все твои дары раскрыты. Напиши короткое письмо себе настоящему." },
+            { num: 75, text: "На 10 минут стань проводником своего таланта. Если твой дар — гармония, наведи порядок в одном уголке комнаты. Если радость — сделай что-то, что принесет тебе радость прямо сейчас." },
+            { num: 76, text: "Нарисуй круг, помести в него руки и повторяй: «Я здесь. Мой дар здесь»." },
+            { num: 77, text: "Повернись к соседу слева и закончи фразу: «Мне кажется, твоя суперсила в том, что ты...»" },
+            { num: 78, text: "Используя только жесты и мимику, «подари» соседу справа тот дар, который ты в нем чувствуешь." },
+            { num: 79, text: "Создай схематичную карту для другого игрока. Покажи на ней моменты, где его талант сиял сильнее всего." },
+            { num: 80, text: "Найди себе пару. Встаньте спиной к спине и по очереди расскажите, какой мост вы могли бы построить вместе, объединив ваши таланты." },
+            { num: 81, text: "Выбери партнера и проведи с ним трехминутное интервью. Твой единственный вопрос: «Расскажи о деле, в котором ты — гений.»" },
+            { num: 82, text: "Выбери партнера и вместе создайте импровизированный танец, в котором движение одного плавно переходит в движение другого. Пусть это будет танец ваших сонастроенных талантов." },
+            { num: 83, text: "Объединитесь в пары. Один — «глина», другой — «скульптор». Скульптор создает из глины позу, которая, по его ощущению, выражает его главный талант. После этого поделитесь тем, что вы почувствовали." },
+            { num: 84, text: "Все становятся в круг. Каждый по очереди шагает в центр, а остальные участники называют дары, которые видят в этом человеке." },
+            { num: 85, text: "Придумай короткое благословение для таланта игрока справа — как маленькое заклинание. Например: «Сила твоего сердца превращает все в красоту.»" },
+            { num: 86, text: "Возьми в ладонь предмет, который ассоциируется у тебя с твоим Источником. Закрой глаза, почувствуй его энергию и закончи фразу: «Я благодарен Тебе за то, что своим присутствием Ты научил меня...»" },
+            { num: 87, text: "Ты — «цветок». Расскажи о своем нераскрытом таланте. Игрок напротив — «пчела»: он «опыляет» тебя идеями и предлагает три способа, как этот талант можно проявить прямо сейчас. Затем поменяйтесь ролями." },
+            { num: 88, text: "Выбери партнера и скажи ему: «Я вижу в тебе огромную силу. Думаю, ты мог(ла) бы раскрыть ее еще больше, если бы...»" },
+            { num: 89, text: "Вся группа вместе создает одно большое «Заклинание Раскрытия». Каждый игрок по очереди говорит или выкрикивает по одному слову-пожеланию. Например: «Свет, Радость, Смелость, Доверие, Любовь!»" },
+            { num: 90, text: "Вся группа за 10 минут создает один общий арт-объект — коллаж, рисунок или скульптуру, который символизирует объединенную силу ваших талантов." },
+            { num: 91, text: "Встаньте в круг, положите руки на плечи друг другу. По очереди отправляйте свой дар в центр круга и расскажите, какой общий «кристалл» силы вы видите там." },
+            { num: 92, text: "Шепни игроку справа: «Я делюсь с тобой щепоткой своего дара [свой талант]». Он принимает, добавляет частичку своего и передает дальше. Когда дар обойдет круг, расскажите, каким стал ваш общий талант." },
+            { num: 93, text: "Вместе придумайте мелодию и пропойте: «Мы — Любовь, мы — Свет, мы — Творцы!» или любые другие слова, которые вам придут." },
+            { num: 94, text: "Все становятся в круг. Любой желающий выходит в центр. Остальные по очереди обращаются к нему по имени, добавляя эпитет, который отражает его дар — например: «Ольга-Утешительница», «Михаил-Созидатель». Повторите задание со всеми участниками." },
+            { num: 95, text: "Расскажи о своем «Проекте Мечты». Все желающие игроки могут присоединиться! Те проекты, что тебе откликнулись одари «Энергией Любви» с пожеланием или словами поддержки." },
+            { num: 96, text: "Группа выбирает одного участника. Каждый по очереди обращается к нему: «Я уже вижу, как твой дар [название дара] проявляется в мире — и вот как это выглядит»." },
+            { num: 97, text: "Придумайте все вместе «Кодекс Горящих Звезд»: 3-5 принципов поддержки и вдохновения, помогающих каждому раскрывать свой дар. Например: «Мы верим в друг друга сильнее, чем сомневаемся в себе.»" },
+            { num: 98, text: "Все вместе составьте шутливый гороскоп для каждого игрока. В своих предсказаниях основывайтесь на талантах этого человека." },
+            { num: 99, text: "Группа встает вокруг одного человека. Каждый по очереди обнимает его и говорит: «Я благословляю в тебе дар [название дара] и помогаю ему раскрыться.»" },
+            { num: 100, text: "Все становятся в круг, руки вытянуты к центру. Представьте, что в центре собирается общий свет. По очереди говорите, какой талант вы вносите в этот свет, чтобы он служил общему благу." },
+            { num: 101, text: "Все берутся за руки и идут по кругу. Каждый думает о человеке справа и загадывает желание, чтобы его талант раскрылся. По сигналу остановитесь и шепните это желание соседу." },
+            { num: 102, text: "Группа выбирает одного участника и в течение 5 минут творит для него что-то, что помогает его таланту засиять — рисунок, песню, слова поддержки или конкретный план действий. Затем по желанию повторите с другими." },
+            { num: 103, text: "Возьми лист бумаги и нарисуй свой герб силы. В нем должно быть три элемента: щит — твоя опора, существо из мира животных — твоя внутренняя сила, и девиз — фраза, которая тебя поддерживает." },
+            { num: 104, text: "Встань и закрой глаза. Представь, что твой дар — это одна из стихий (огонь, вода, воздух, земля, дерево). Как она проявляется в твоем теле?" },
+            { num: 105, text: "Найди в комнате книгу, журнал или газету. Задай вопрос: «Что мне важно узнать о своем даре прямо сейчас?». Открой книгу на случайном месте, это и будет ответ от твоего мудрого «Я»." },
+            { num: 106, text: "Представь, что твой талант — это подарок. Возьми любой предмет, который под руку попадется, и подари его кому-то из игроков, сказав: «Я дарю тебе [свой дар].»" },
+            { num: 107, text: "Возьми полоску бумаги. С одной стороны напиши или нарисуй то, что ты готов(а) отпустить. С другой — один шаг, который приблизит тебя к новой главе твоей жизни, где твой талант сияет во всей полноте." },
+            { num: 108, text: "Закрой глаза и спроси у себя 7-летнего: «В чем моя настоящая сила?» Первый образ или слово — твой ключ. Нарисуй его за 2 минуты." },
+            { num: 109, text: "Ведущий минуту смотрит тебе в глаза — с открытым сердцем, видя в тебе Источник, твою Истинную Суть. Затем поделись, что ты почувствовал(а), какие осознания или чувства пришли." }
+        ];
+
+        const STRENGTH_DECK = [
+            { num: 1, text: "Иногда ты не веришь, что у тебя получится задуманное. А что если твой талант просто ждет, когда ты ему полностью доверишься?", practice: "Закрой глаза и вспомни момент из жизни, когда у тебя что-то получилось легко, как по волшебству. Найди в теле это чувство: «Я могу!». Позволь ему засиять внутри тебя." },
+            { num: 2, text: "Ты стоишь на пороге чего-то нового. Что сейчас поможет тебе сделать первый шаг, даже если страшно?", practice: "Положи руку на сердце и скажи: «Я разрешаю себе просто попробовать». Сделай одно маленькое действие в сторону проекта своей мечты прямо сейчас." },
+            { num: 3, text: "Иногда твоя сила пугает тебя. Что такое яркое ты пока прячешь от мира?", practice: "Посмотри в зеркало и улыбнись себе. Скажи: «Вся моя мощь на самом деле для меня!». Почувствуй, как в тебе просыпается уверенность." },
+            { num: 4, text: "Когда ты стараешься понравиться всем, то теряется твой истинный голос. Что ты хочешь и можешь сказать миру прямо сейчас и по-своему?", practice: "Вдохни глубоко и выдохни все чужое. Произнеси вслух то, что тебе по-настоящему важно. Слушай свой голос, пусть он ведет тебя." },
+            { num: 5, text: "Бывает, хочется спрятаться и не показывать, что тебе больно. Но что, если именно в этом и скрыта твоя истинная глубина?", practice: "Положи ладонь на грудь. Почувствуй свое дыхание. Скажи себе: «Я позволяю себе просто быть собой»." },
+            { num: 6, text: "Кажется будто ничего не происходит и все застыло. А может, в этот момент твой талант просто тихо растет, как семечко под землей ранней весной?", practice: "Закрой глаза и представь, как внутри тебя что-то распускается и крепнет с каждой секундой. Просто доверься этому постепенному процессу." },
+            { num: 7, text: "Ты смотришь на других и думаешь: «Они лучше». А что в тебе такого, чего нет ни у кого другого?", practice: "Назови вслух три вещи, которые тебе нравятся в себе. Даже самые маленькие: это и есть семена твоих уникальных даров." },
+            { num: 8, text: "Иногда все идет наперекосяк и не по плану. А что если это просто способ Источника помочь тебе увидеть новую тропинку?", practice: "Сделай глубокий вдох и скажи: «Я доверяю Потоку Жизни». Почувствуй, как внутри появляется легкость и интерес." },
+            { num: 9, text: "Пусть ты не знаешь, что будет дальше. Но что если попробовать сделать хотя бы один шаг к своей мечте из любви, а не из страха прямо сейчас?", practice: "Вспомни момент, когда ты следовал(а) сердцу и все сложилось наилучшим образом. Почувствуй ту же опору внутри и теперь." },
+            { num: 10, text: "Перед тобой два пути. Один привычный и безопасный, другой заманчиво зовет, но пугает. Какой путь выбирает твое сердце?", practice: "Закрой глаза и представь оба пути. Что ты чувствуешь в теле, когда смотришь на них? В каком больше жизни?" },
+            { num: 11, text: "Часто люди рядом подсвечивают нам то, что мы сами не хотим видеть в себе. Что в поведении других тебя сейчас цепляет?", practice: "Вспомни кого-то, кто тебя раздражает или вызывает другие сильные чувства. Спроси себя: чему он может меня научить? Может, это просто отражение моей силы?" },
+            { num: 12, text: "Когда тебе делают больно, хочется закрыться. Какие чувства, которые уже давно просятся на волю, ты до сих пор удерживаешь в сердце?", practice: "Представь человека, который вызвал в тебе эти чувства в луче света. Скажи ему мысленно: «Я освобождаю нас обоих». Почувствуй, как становится легче дышать." },
+            { num: 13, text: "Бывает, что тебя не слышат, и это очень больно. А что, если другой человек просто говорит на своем языке любви?", practice: "Вспомни момент, когда ты не понимал(а) другого. Спроси себя: «А что я чувствовал(а) тогда?» и наблюдай, как открывается твое сердце." },
+            { num: 14, text: "Мы все уникальны, и в этом вся красота мира. Позволяешь ли ты людям в твоем окружении свободу быть собой, не теряя при этом себя?", practice: "Закрой глаза и скажи: «Я выбираю видеть свет в каждом». Вдохни и почувствуй, как в сердце становится просторнее." },
+            { num: 15, text: "Иногда любовь — это не «все позволять», а честно сказать «нет». Чему или кому ты можешь твердо сказать «нет», чтобы выбрать себя и жизнь в себе?", practice: "Положи руку на живот. Почувствуй, где расположены твое внутреннее «да» и «нет». Это компас твоей силы." },
+            { num: 16, text: "Быть по-настоящему рядом иногда страшно. Что мешает тебе открыться людям глубже?", practice: "Вспомни того, с кем тебе спокойно. Почувствуй, как через доверие тепло возвращается в сердце." },
+            { num: 17, text: "Когда смотришь на других, легко забыть, что у каждого свой путь. Что ты можешь отпраздновать в себе прямо сейчас?", practice: "Посмотри вокруг. Каждый человек как отдельная звезда. Найди свою и позволь ей светить, не меряясь яркостью." },
+            { num: 18, text: "Ты ждал(а) от другого любви, слов поддержки... А что, если все это ты можешь дать себе сам(а)?", practice: "Напиши себе письмо от лица твоего Источника, который любит тебя безусловно. Прочитай его вслух. Это и есть Любовь." },
+            { num: 19, text: "Люди приходят и уходят, чтобы мы росли. Кого или что тебе пора отпустить с благодарностью?", practice: "Скажи: «Спасибо, что ты был(а) в моей жизни». И представь, как вы оба идете дальше, свободные и легкие." },
+            { num: 20, text: "Когда ты видишь свет в другом, ты пробуждаешь его и в себе. Как ты можешь сегодня принести немного добра в чей-то день?", practice: "Сделай для любого игрока или игроков то, что придет в Потоке: улыбнись, помоги, обними. Пусть это станет твоим маленьким чудом." },
+            { num: 21, text: "Иногда внутри ты слышишь тихий голос: «Пора». Что он шепчет тебе сейчас?", practice: "Закрой глаза и прислушайся к себе. Не спеши понимать — просто почувствуй направление." },
+            { num: 22, text: "Когда ты перестаешь бороться, все вдруг начинает складываться. Где в жизни тебе пора отпустить контроль?", practice: "Сделай глубокий вдох и представь, что жизнь несет тебя как река. Позволь ей показать, куда плыть дальше." },
+            { num: 23, text: "Что помогает тебе подняться в трудные моменты?", practice: "Вспомни три вещи, на которые ты можешь опереться прямо сейчас — людей, качества, чувства. Почувствуй их силу в себе." },
+            { num: 24, text: "Что, если сила пробуждается не тогда, когда ты все знаешь, а когда выбираешь верить?", practice: "Положи руку на сердце и скажи: «Я верю, даже если пока не вижу». Почувствуй тепло под ладонью." },
+            { num: 25, text: "Иногда сила — это не твердость, а умение быть нежным. Где ты можешь быть добрее к себе сегодня?", practice: "Обними себя. Просто так. Почувствуй, как сила растет из заботы, а не из давления." },
+            { num: 26, text: "Сила это не всегда буря, иногда это тишина перед рассветом. Что подсказывает тебе тишина внутри?", practice: "Сделай паузу. Послушай свое дыхание. Пусть тишина станет твоим союзником и ведет тебя." },
+            { num: 27, text: "Что ты несешь в себе уже слишком долго?", practice: "Представь, что с каждым выдохом ты отпускаешь лишнее. Дыши, пока в сердце не станет легче и просторнее." },
+            { num: 28, text: "Когда ты в своей силе, мир вокруг тоже начинает светиться. Что помогает тебе светиться изнутри?", practice: "Вспомни момент, когда ты чувствовал(а) искреннюю радость быть собой. Почувствуй, как этот свет снова загорается внутри." },
+            { num: 29, text: "Каждый твой выбор это луч в будущее (и прошлое). Какой выбор сегодня приблизит тебя к себе настоящему?", practice: "Сделай шаг к своей мечте: маленький, но осознанный. Пусть он станет началом нового пути." },
+            { num: 30, text: "Иногда сила это то, что ты отдаешь миру. Что ты можешь подарить сегодня, просто из любви?", practice: "Подумай, что в тебе есть ценного: слово, внимание, доброта. Поделись этим — и почувствуй, как твоя сила течет свободно." },
+            { num: 31, text: "Душа говорит с нами не словами, а чувствами. Что ты чувствуешь прямо сейчас, если просто побудешь с этим немного, не убегая?", practice: "Посиди тихо и послушай свои чувства, как друга. Может, они хотят рассказать тебе что-то важное?" },
+            { num: 32, text: "Часто мы ищем ответы снаружи, а они уже живут внутри нас. Какой ответ в тебе уже есть, но ты пока не решаешься его услышать?", practice: "Положи руку на сердце и спроси: «Что я уже знаю о себе?» Помолчи немного и просто послушай, что скажет твое сердце." },
+            { num: 33, text: "Даже если ты закрываешь глаза, свет все равно не исчезает. Что в тебе продолжает светиться, даже когда вокруг темно?", practice: "Вспомни момент, когда тебе было трудно, но ты не сдался(ась). Это и есть твой свет и он всегда с тобой." },
+            { num: 34, text: "Прошлое приходит не для того, чтобы тебя расстроить, а чтобы ты смог(ла) отпустить его и стать свободнее. Что внутри тебя сегодня просит простить и отпустить?", practice: "Закрой глаза и обними ту часть себя, которую долго не замечал(а). Скажи ей тихо: «Я вижу тебя. Я освобождаю тебя и себя»." },
+            { num: 35, text: "Когда ты перестаешь прятаться, твоя душа начинает дышать легко и радостно. Что бы ты сделал(а), если бы просто разрешил(а) себе быть собой?", practice: "Представь, что страх тает, как туман на солнце. Каким ты становишься, когда тебе больше не нужно бояться?" },
+            { num: 36, text: "Каждое утро напоминает: все можно начать сначала. Что ты готов(а) начать заново уже сегодня?", practice: "Сделай глубокий вдох и почувствуй свежесть нового дня. Пусть прямо сейчас начнется новая глава твоей жизни." },
+            { num: 37, text: "Твоя Душа всегда знает, куда идти. Просто ум не всегда успевает все понять, но с этим все в порядке. Какой необъяснимый тихий зов ты чувствуешь сейчас?", practice: "Доверься этому ощущению. Целый путь будет виден только тому, кто сделает первый шаг." },
+            { num: 38, text: "Мы часто ищем чудо где-то вовне, забывая, что сами им являемся. В чем твое волшебство сегодня?", practice: "Посмотри на свои руки, понаблюдай дыхание, мир вокруг. Все это уже чудо. И ты — тоже." },
+            { num: 39, text: "Есть ли внутри тебя место, где ты полностью спокоен(на)? Где тишина не пугает, а исцеляет?", practice: "Закрой глаза и найди это место внутри. Оно всегда рядом — просто вспомни о нем." },
+            { num: 40, text: "Иногда любовь приходит не как буря, а как принятие. Кого или что ты готов(а) принять сегодня?", practice: "Позволь себе не менять — просто любить. Так начинается исцеление." },
+            { num: 41, text: "Иногда твой внутренний свет проявляется как буря. Но буря это замечательно, она несет не разрушение, а очищение.", practice: "Вспомни момент, когда рядом с тобой у людей происходили сильные перемены. Где в этой ситуации совершенство?" },
+            { num: 42, text: "Твоя энергия может быть зеркалом и не всем понравится то, что они увидят. Как ты реагируешь, когда кто-то раздражается рядом с тобой?", practice: "Попробуй вместо того чтобы защищаться сказать себе: «Все люди это мои отражения, так что я там вижу?»." },
+            { num: 43, text: "Иногда быть собой значит быть очень неудобным для других. Вспомни ситуацию, в которой ты бы хотел(а) проявить смелость не угождать, а быть собой.", practice: "Сделай глубокий вдох и почувствуй: твоя истина это не агрессия, а чистая сила Жизни." },
+            { num: 44, text: "Ты можешь вскрывать ложь одним взглядом. Но умеешь ли ты делать это с Любовью, а не с болью?", practice: "Вспомни ситуацию, где ты выбрал(а) угодить, а не быть собой. Как бы ты хотел(а) поступить в следующий раз?" },
+            { num: 45, text: "Где в тебе живет сила Матери-материи, которая очищает даже через боль?", practice: "Положи руку на живот и скажи себе: «Я позволяю Жизни во мне быть и мягкой, и сильной одновременно»." },
+            { num: 46, text: "Иногда твой Дар это не про «согреть», а про «осветить правду», от которой не спрячешься. Как ты можешь принять этот Дар без вины?", practice: "Представь, что твоя правда это луч света. Позволь ей пройти сквозь твое сердце. Что ты чувствуешь?" },
+            { num: 47, text: "Ты не обязан(а) быть удобной. Какую свою силу ты прячешь, потому что она пугает других?", practice: "Скажи себе: «Я не угроза. Я это пробуждение Жизни!». Что ты чувствуешь?" },
+            { num: 48, text: "Когда ты входишь в пространство, всё неистинное начинает рушиться. Что ты чувствуешь, наблюдая этот процесс?", practice: "Попробуй увидеть в этом благословение: через тебя проявляется честность." },
+            { num: 49, text: "Ты чувствуешь боль мира острее других. Где ты принимаешь чужую тьму за свою?", practice: "Представь, что возвращаешь всё лишнее обратно Источнику. Пусть только твоя чистая сила останется с тобой." },
+            { num: 50, text: "Настоящая Любовь не всегда нежная, иногда она резко будит спящих. Готов(а) ли ты быть проводником пробуждения, даже если тебя не поймут?", practice: "Сделай вдох и скажи: «Я доверяю проявлению своей силы. Она служит Жизни»." }
+        ];
+
+        const HELP_TEXT = "Выбери любого игрока и помоги ему тем способом, который приходит тебе в моменте: словом, советом или просто обнимашками. 💛";
+
+        // ============================================
+        // GAME STATE
+        // ============================================
+
+        const IMAGES = {
+            cosmic: 'https://image.qwenlm.ai/public_source/b1ce62eb-c782-4ea8-af5b-05a4df662677/129b928c8-4f59-4af7-a1b7-a25d5d866996.png',
+            star: 'https://image.qwenlm.ai/public_source/b1ce62eb-c782-4ea8-af5b-05a4df662677/1768d8ac9-464b-4f79-a56d-e011dbae749d.png',
+            treasure: 'https://image.qwenlm.ai/public_source/b1ce62eb-c782-4ea8-af5b-05a4df662677/1a9eadf51-3030-4e8d-ad70-422fe160d8fd.png',
+            strength: 'https://image.qwenlm.ai/public_source/b1ce62eb-c782-4ea8-af5b-05a4df662677/1c42cad76-cbc3-4c0f-bc71-35628fca5433.png',
+            energy: 'https://image.qwenlm.ai/public_source/b1ce62eb-c782-4ea8-af5b-05a4df662677/1e9334464-cefb-48bf-b580-c7e2b8ba04e2.png',
+            dice: 'https://image.qwenlm.ai/public_source/b1ce62eb-c782-4ea8-af5b-05a4df662677/1a3233244-a75b-4e06-b634-aaa38eb33ee9.png',
+            help: 'https://image.qwenlm.ai/public_source/b1ce62eb-c782-4ea8-af5b-05a4df662677/1e02bb590-ef14-48e7-9fd7-e142db7cabe1.png',
+            finale: 'https://image.qwenlm.ai/public_source/b1ce62eb-c782-4ea8-af5b-05a4df662677/10317e570-a5c6-46ec-8673-85f084898c32.png'
+        };
+
+        let gameState = {
+            playerCount: 2,
+            currentPlayer: 0,
+            round: 1,
+            isRolling: false,
+            waitingForSecondRoll: false,
+            treasures: [],
+            strengths: [],
+            history: [],
+            talents: [],
+            projects: [],
+            energy: 0,
+            cardsDrawn: 0,
+            helpSelected: null
+        };
+
+        // Shuffle arrays
+        function shuffleArray(arr) {
+            const shuffled = [...arr];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            const count = 150;
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--duration', (Math.random() * 4 + 2) + 's');
+                star.style.setProperty('--min-opacity', Math.random() * 0.3 + 0.1);
+                star.style.animationDelay = Math.random() * 4 + 's';
+                starfield.appendChild(star);
+            }
+        }
+
+        function initDiceFaces() {
+            const dotPatterns = {
+                1: [[1, 1]],
+                2: [[0, 0], [2, 2]],
+                3: [[0, 0], [1, 1], [2, 2]],
+                4: [[0, 0], [0, 2], [2, 0], [2, 2]],
+                5: [[0, 0], [0, 2], [1, 1], [2, 0], [2, 2]],
+                6: [[0, 0], [0, 2], [1, 0], [1, 2], [2, 0], [2, 2]]
+            };
+
+            for (let face = 1; face <= 6; face++) {
+                const container = document.getElementById('face' + face);
+                container.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                container.style.gridTemplateRows = 'repeat(3, 1fr)';
+                const dots = dotPatterns[face];
+                dots.forEach(([row, col]) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'dice-dot';
+                    dot.style.gridRow = row + 1;
+                    dot.style.gridColumn = col + 1;
+                    container.appendChild(dot);
+                });
+            }
+        }
+
+        function initPlayerCountSelector() {
+            document.querySelectorAll('.player-count-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.player-count-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    gameState.playerCount = parseInt(btn.dataset.count);
+                });
+            });
+        }
+
+        function initStartScreen() {
+            document.getElementById('startBtn').addEventListener('click', startGame);
+            document.getElementById('showRulesBtn').addEventListener('click', () => {
+                document.getElementById('rulesModal').classList.add('active');
+            });
+        }
+
+        function startGame() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('appContainer').style.display = 'flex';
+            initPlayerBar();
+            gameState.treasures = shuffleArray(TREASURE_DECK);
+            gameState.strengths = shuffleArray(STRENGTH_DECK);
+            updateStats();
+        }
+
+        function initPlayerBar() {
+            const bar = document.getElementById('playerBar');
+            bar.innerHTML = '';
+            for (let i = 0; i < gameState.playerCount; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'player-btn' + (i === 0 ? ' active' : '');
+                btn.textContent = '👤 Игрок ' + (i + 1);
+                btn.addEventListener('click', () => selectPlayer(i));
+                bar.appendChild(btn);
+            }
+        }
+
+        function selectPlayer(index) {
+            gameState.currentPlayer = index;
+            document.querySelectorAll('.player-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+        }
+
+        // ============================================
+        // DICE ROLLING
+        // ============================================
+
+        const DICE_ROTATIONS = {
+            1: { x: 0, y: 0, z: 0 },
+            2: { x: 0, y: 180, z: 0 },
+            3: { x: 0, y: -90, z: 0 },
+            4: { x: 0, y: 90, z: 0 },
+            5: { x: -90, y: 0, z: 0 },
+            6: { x: 90, y: 0, z: 0 }
+        };
+
+        function rollDice() {
+            if (gameState.isRolling) return;
+            gameState.isRolling = true;
+
+            const btn = document.getElementById('rollBtn');
+            btn.disabled = true;
+
+            const result = Math.floor(Math.random() * 6) + 1;
+            const dice = document.getElementById('dice');
+
+            // Set CSS variables for final rotation
+            const rotation = DICE_ROTATIONS[result];
+            const extraX = 360 * 2;
+            const extraY = 360 * 2;
+            const extraZ = 360 * Math.floor(Math.random() * 2);
+
+            dice.style.setProperty('--final-x', (rotation.x + extraX) + 'deg');
+            dice.style.setProperty('--final-y', (rotation.y + extraY) + 'deg');
+            dice.style.setProperty('--final-z', (rotation.z + extraZ) + 'deg');
+
+            dice.classList.remove('rolling');
+            void dice.offsetWidth;
+            dice.classList.add('rolling');
+
+            setTimeout(() => {
+                dice.classList.remove('rolling');
+                gameState.isRolling = false;
+                btn.disabled = false;
+                handleDiceResult(result);
+            }, 1300);
+        }
+
+        function handleDiceResult(result) {
+            if (gameState.waitingForSecondRoll) {
+                gameState.waitingForSecondRoll = false;
+                document.getElementById('secondRollIndicator').classList.remove('visible');
+
+                if (result === 6) {
+                    // Double 6 - Contact with Source!
+                    addEnergy();
+                    showToast('✨ Контакт с Источником! Получена Энергия Любви! ✨');
+                    createEnergyBurst();
+                    createConfetti();
+                    setTimeout(() => {
+                        processNormalRoll(Math.floor(Math.random() * 6) + 1);
+                    }, 2000);
+                } else {
+                    processNormalRoll(result);
+                }
+                return;
+            }
+
+            if (result === 6) {
+                gameState.waitingForSecondRoll = true;
+                showHelpModal();
+                document.getElementById('secondRollIndicator').classList.add('visible');
+            } else {
+                processNormalRoll(result);
+            }
+        }
+
+        function processNormalRoll(result) {
+            let card;
+            let type;
+
+            if (result >= 1 && result <= 3) {
+                type = 'treasure';
+                card = drawFromDeck('treasure');
+            } else if (result >= 4 && result <= 5) {
+                type = 'strength';
+                card = drawFromDeck('strength');
+            }
+
+            if (card) {
+                displayCard(card, type);
+                addToHistory(card, type);
+                gameState.cardsDrawn++;
+                updateStats();
+            }
+        }
+
+        function drawFromDeck(deckType) {
+            if (deckType === 'treasure') {
+                if (gameState.treasures.length === 0) {
+                    gameState.treasures = shuffleArray(TREASURE_DECK);
+                }
+                return gameState.treasures.pop();
+            } else {
+                if (gameState.strengths.length === 0) {
+                    gameState.strengths = shuffleArray(STRENGTH_DECK);
+                }
+                return gameState.strengths.pop();
+            }
+        }
+
+        // ============================================
+        // CARD DISPLAY
+        // ============================================
+
+        function displayCard(card, type) {
+            const cardEl = document.getElementById('card');
+            const noCard = document.getElementById('noCard');
+
+            noCard.style.display = 'none';
+            cardEl.classList.remove('visible', 'treasure', 'strength', 'help', 'card-shuffling');
+
+            // Set card properties
+            const badge = document.getElementById('cardTypeBadge');
+            const cardNum = document.getElementById('cardNumber');
+            const cardText = document.getElementById('cardText');
+            const cardPractice = document.getElementById('cardPractice');
+            const cardImage = document.getElementById('cardImage');
+
+            if (type === 'treasure') {
+                cardEl.classList.add('treasure');
+                badge.textContent = '💎 Карта Сокровищ';
+                cardImage.src = IMAGES.treasure;
+            } else if (type === 'strength') {
+                cardEl.classList.add('strength');
+                badge.textContent = '⚡ Пробуждение Силы';
+                cardImage.src = IMAGES.strength;
+            }
+
+            cardNum.textContent = 'Карта #' + card.num;
+            cardText.textContent = card.text;
+
+            if (card.practice) {
+                cardPractice.style.display = 'block';
+                cardPractice.textContent = card.practice;
+            } else {
+                cardPractice.style.display = 'none';
+            }
+
+            // Animate card
+            setTimeout(() => {
+                cardEl.classList.add('visible');
+            }, 50);
+        }
+
+        function addToHistory(card, type) {
+            const playerName = 'Игрок ' + (gameState.currentPlayer + 1);
+            const entry = {
+                card: card,
+                type: type,
+                player: playerName,
+                round: gameState.round,
+                turn: gameState.cardsDrawn
+            };
+            gameState.history.unshift(entry);
+
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            const countEl = document.getElementById('historyCount');
+
+            list.innerHTML = '';
+            countEl.textContent = gameState.history.length + ' карт';
+
+            gameState.history.forEach((entry, index) => {
+                const item = document.createElement('div');
+                item.className = 'history-item ' + entry.type;
+
+                const typeName = entry.type === 'treasure' ? 'Сокровищ' :
+                                 entry.type === 'strength' ? 'Силы' : 'Помощь';
+
+                item.innerHTML = `
+                    <div class="history-item-header">
+                        <span class="history-item-type">${typeName} #${entry.card.num}</span>
+                        <span class="history-item-turn">Раунд ${entry.round} • ${entry.player}</span>
+                    </div>
+                    <p class="history-item-text">${entry.card.text.substring(0, 80)}...</p>
+                `;
+
+                item.addEventListener('click', () => {
+                    displayCard(entry.card, entry.type);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+
+                list.appendChild(item);
+            });
+        }
+
+        // ============================================
+        // HELP FRIEND MODAL
+        // ============================================
+
+        function showHelpModal() {
+            const modal = document.getElementById('helpModal');
+            const select = document.getElementById('helpPlayerSelect');
+            const action = document.getElementById('helpAction');
+
+            select.innerHTML = '';
+            action.style.display = 'none';
+
+            for (let i = 0; i < gameState.playerCount; i++) {
+                if (i === gameState.currentPlayer) continue;
+                const btn = document.createElement('button');
+                btn.className = 'help-player-btn';
+                btn.textContent = '👤 Игрок ' + (i + 1);
+                btn.addEventListener('click', () => {
+                    select.querySelectorAll('.help-player-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    gameState.helpSelected = i;
+                    action.style.display = 'block';
+                    action.innerHTML = `
+                        <p>💛 Вы помогаете <b>Игроку ${i + 1}</b></p>
+                        <p>${HELP_TEXT}</p>
+                        <p style="margin-top: 10px; color: var(--gold);">✨ После помощи бросьте кубик ещё раз!</p>
+                    `;
+                });
+                select.appendChild(btn);
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeHelpModal() {
+            document.getElementById('helpModal').classList.remove('active');
+        }
+
+        // ============================================
+        // PANELS & MODALS
+        // ============================================
+
+        function switchPanel(panel) {
+            document.querySelectorAll('.panel-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (panel === 'talents') {
+                document.querySelectorAll('.panel-tab')[0].classList.add('active');
+                document.getElementById('talentsPanel').classList.add('active');
+            } else {
+                document.querySelectorAll('.panel-tab')[1].classList.add('active');
+                document.getElementById('projectsPanel').classList.add('active');
+            }
+        }
+
+        let currentModalType = '';
+
+        function openModal(type) {
+            currentModalType = type;
+            const modal = document.getElementById('inputModal');
+            const title = document.getElementById('modalTitle');
+            const input = document.getElementById('modalInput');
+
+            if (type === 'talent') {
+                title.textContent = ' Записать Талант';
+                input.placeholder = 'Например: Я умею слушать людей...';
+            } else if (type === 'project') {
+                title.textContent = '🚀 Записать Проект';
+                input.placeholder = 'Например: Создать курс по медитации...';
+            }
+
+            input.value = '';
+            modal.classList.add('active');
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function closeModal() {
+            document.getElementById('inputModal').classList.remove('active');
+        }
+
+        function confirmModal() {
+            const input = document.getElementById('modalInput');
+            const value = input.value.trim();
+
+            if (!value) {
+                showToast('⚠️ Введите текст!');
+                return;
+            }
+
+            if (currentModalType === 'talent') {
+                gameState.talents.push(value);
+                renderTalents();
+                showToast('💎 Талант записан!');
+            } else if (currentModalType === 'project') {
+                gameState.projects.push(value);
+                renderProjects();
+                showToast('🚀 Проект записан!');
+            }
+
+            closeModal();
+            updateStats();
+        }
+
+        function renderTalents() {
+            const list = document.getElementById('talentsList');
+            list.innerHTML = '';
+
+            if (gameState.talents.length === 0) {
+                list.innerHTML = '<li class="empty-panel">Запишите свой первый талант! ✨</li>';
+                return;
+            }
+
+            gameState.talents.forEach((talent, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>💎 ${talent}</span>
+                    <button class="remove-item" onclick="removeTalent(${index})">✕</button>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function renderProjects() {
+            const list = document.getElementById('projectsList');
+            list.innerHTML = '';
+
+            if (gameState.projects.length === 0) {
+                list.innerHTML = '<li class="empty-panel">Запишите свой первый проект! 🚀</li>';
+                return;
+            }
+
+            gameState.projects.forEach((project, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>🚀 ${project}</span>
+                    <button class="remove-item" onclick="removeProject(${index})">✕</button>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function removeTalent(index) {
+            gameState.talents.splice(index, 1);
+            renderTalents();
+            updateStats();
+        }
+
+        function removeProject(index) {
+            gameState.projects.splice(index, 1);
+            renderProjects();
+            updateStats();
+        }
+
+        // ============================================
+        // ENERGY & STATS
+        // ============================================
+
+        function addEnergy() {
+            gameState.energy++;
+            updateStats();
+            createEnergyBurst();
+            showToast('⭐ +1 Энергия Любви!');
+        }
+
+        function updateStats() {
+            document.getElementById('roundCount').textContent = gameState.round;
+            document.getElementById('energyCount').textContent = gameState.energy;
+            document.getElementById('talentCount').textContent = gameState.talents.length;
+            document.getElementById('projectCount').textContent = gameState.projects.length;
+            document.getElementById('cardsDrawn').textContent = gameState.cardsDrawn;
+        }
+
+        // ============================================
+        // EFFECTS
+        // ============================================
+
+        function createEnergyBurst() {
+            const container = document.createElement('div');
+            container.className = 'energy-burst';
+            document.body.appendChild(container);
+
+            for (let i = 0; i < 5; i++) {
+                const ring = document.createElement('div');
+                ring.className = 'energy-burst-ring';
+                ring.style.animationDelay = (i * 0.15) + 's';
+                container.appendChild(ring);
+            }
+
+            setTimeout(() => container.remove(), 2000);
+        }
+
+        function createConfetti() {
+            const container = document.createElement('div');
+            container.className = 'confetti';
+            document.body.appendChild(container);
+
+            const colors = ['#ffd700', '#ff9f43', '#c74bff', '#4a9eff', '#4bff8e', '#ff6b6b'];
+
+            for (let i = 0; i < 60; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.top = '-10px';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = Math.random() * 0.5 + 's';
+                piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                piece.style.width = (Math.random() * 8 + 4) + 'px';
+                piece.style.height = (Math.random() * 8 + 4) + 'px';
+                container.appendChild(piece);
+            }
+
+            setTimeout(() => container.remove(), 4000);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 2500);
+        }
+
+        // ============================================
+        // MODALS
+        // ============================================
+
+        function closeRulesModal() {
+            document.getElementById('rulesModal').classList.remove('active');
+        }
+
+        // Enter key for modal
+        document.getElementById('modalInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') confirmModal();
+        });
+
+        // Close modals on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // ============================================
+        // RESET
+        // ============================================
+
+        function resetGame() {
+            if (!confirm('Вы уверены, что хотите начать игру заново? Все данные будут потеряны.')) return;
+
+            gameState = {
+                playerCount: gameState.playerCount,
+                currentPlayer: 0,
+                round: 1,
+                isRolling: false,
+                waitingForSecondRoll: false,
+                treasures: shuffleArray(TREASURE_DECK),
+                strengths: shuffleArray(STRENGTH_DECK),
+                history: [],
+                talents: [],
+                projects: [],
+                energy: 0,
+                cardsDrawn: 0,
+                helpSelected: null
+            };
+
+            document.getElementById('card').classList.remove('visible');
+            document.getElementById('noCard').style.display = 'block';
+            document.getElementById('historyList').innerHTML = '';
+            document.getElementById('historyCount').textContent = '0 карт';
+            document.getElementById('talentsList').innerHTML = '<li class="empty-panel">Запишите свой первый талант! ✨</li>';
+            document.getElementById('projectsList').innerHTML = '<li class="empty-panel">Запишите свой первый проект! </li>';
+            document.getElementById('secondRollIndicator').classList.remove('visible');
+
+            initPlayerBar();
+            updateStats();
+            showToast('🔄 Игра начата заново!');
+        }
+
+        // ============================================
+        // AUTO-ADVANCE ROUND
+        // ============================================
+
+        // Increment round after each complete turn
+        const originalProcessNormalRoll = processNormalRoll;
+
+        // Track turns for round advancement
+        let turnCounter = 0;
+        const turnsPerRound = gameState.playerCount || 1;
+
+        function incrementRound() {
+            gameState.round++;
+            updateStats();
+        }
+
+        // ============================================
+        // INIT
+        // ============================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createStarfield();
+            initDiceFaces();
+            initPlayerCountSelector();
+            initStartScreen();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !document.querySelector('.modal-overlay.active')) {
+                e.preventDefault();
+                rollDice();
+            }
+        });
+    </script>
+</body>
+</html>
+
