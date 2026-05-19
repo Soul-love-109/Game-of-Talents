@@ -7,7 +7,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&family=Nunito:wght@300;400;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--bg-dark:#0a0a1a;--bg-medium:#121230;--bg-card:#1a1a3e;--purple-deep:#2d1b69;--purple-mid:#6b3fa0;--purple-light:#9b6dd7;--gold:#ffd700;--gold-light:#ffed4a;--gold-dark:#b8960c;--text-light:#e8e0ff;--text-muted:#a89ec8;--treasure-accent:#4a9eff;--strength-accent:#c74bff;--help-accent:#4bff8e;}
+:root{--bg-dark:#0a0a1a;--bg-medium:#121230;--bg-card:#1a1a3e;--purple-deep:#2d1b69;--purple-mid:#6b3fa0;--purple-light:#9b6dd7;--gold:#ffd700;--gold-light:#ffed4a;--gold-dark:#b8960c;--text-light:#e8e0ff;--text-muted:#a89ec8;--treasure-accent:#4a9eff;--strength-accent:#c74bff;--help-accent:#4bff8e;--host-accent:#ff6b6b;}
 body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-light);min-height:100vh;overflow-x:hidden;position:relative;}
 .starfield{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;}
 .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--duration) ease-in-out infinite;}
@@ -32,6 +32,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-
 .btn-secondary{background:rgba(107,63,160,.3);color:var(--gold);border:1px solid var(--purple-light);}
 .btn-danger{background:rgba(255,80,80,.2);color:#ff6b6b;border:1px solid rgba(255,80,80,.3);}
 .btn-help{background:rgba(75,255,142,.15);color:var(--help-accent);border:1px solid rgba(75,255,142,.3);}
+.btn-host{background:rgba(255,107,107,.2);color:var(--host-accent);border:1px solid rgba(255,107,107,.3);}
 .room-code-display{font-family:'Comfortaa',monospace;font-size:2rem;letter-spacing:8px;color:var(--gold);background:rgba(0,0,0,.4);padding:15px;border-radius:12px;margin:15px 0;min-height:55px;display:flex;align-items:center;justify-content:center;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--bg-medium);color:var(--gold);padding:12px 25px;border-radius:20px;border:1px solid var(--gold);z-index:2000;transition:.4s;opacity:0;pointer-events:none;font-weight:600;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
@@ -40,9 +41,12 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-
 .header-right{display:flex;gap:12px;font-size:.85rem;flex-wrap:wrap;}
 .stat-badge{background:rgba(255,215,0,.1);padding:4px 10px;border-radius:15px;border:1px solid rgba(255,215,0,.3);color:var(--gold);}
 .game-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px;max-width:800px;margin:0 auto;width:100%;}
+.host-badge{background:rgba(255,107,107,.2);color:var(--host-accent);padding:4px 10px;border-radius:15px;border:1px solid rgba(255,107,107,.3);font-size:.75rem;margin-left:8px;}
 .players-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;}
-.player-chip{padding:8px 15px;background:rgba(26,26,62,.6);border-radius:20px;border:2px solid transparent;transition:all .3s;font-size:.9rem;}
+.player-chip{padding:8px 15px;background:rgba(26,26,62,.6);border-radius:20px;border:2px solid transparent;transition:all .3s;font-size:.9rem;display:flex;align-items:center;gap:6px;}
 .player-chip.active{border-color:var(--gold);background:rgba(255,215,0,.1);box-shadow:0 0 10px rgba(255,215,0,.2);color:var(--gold);}
+.player-chip.host{border-color:var(--host-accent);background:rgba(255,107,107,.1);}
+.player-chip .host-icon{color:var(--host-accent);}
 .dice-area{margin:20px 0;perspective:600px;width:110px;height:110px;cursor:pointer;position:relative;}
 .dice-cube{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.34,1.56,.64,1);}
 .dice-face{position:absolute;width:90px;height:90px;background:linear-gradient(145deg,#2a2a5e,#1a1a3e);border:2px solid rgba(155,109,215,.4);border-radius:14px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:10px;box-shadow:0 0 20px rgba(107,63,160,.3);}
@@ -66,6 +70,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-
 .card-text{font-size:1.05rem;line-height:1.6;margin-bottom:12px;}
 .card-practice{background:rgba(255,215,0,.05);border-left:3px solid var(--gold-dark);padding:10px;border-radius:0 10px 10px 0;font-size:.9rem;color:var(--text-muted);}
 .actions-area{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:20px;width:100%;}
+.host-controls{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);padding:15px;border-radius:15px;margin-top:20px;width:100%;max-width:500px;}
+.host-controls h3{color:var(--host-accent);font-size:.9rem;margin-bottom:10px;text-align:center;}
+.host-buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
 .lists-section{width:100%;max-width:500px;margin-top:25px;display:grid;grid-template-columns:1fr 1fr;gap:15px;}
 .list-box{background:rgba(26,26,62,.5);padding:15px;border-radius:15px;border:1px solid rgba(107,63,160,.3);}
 .list-box h3{font-size:.85rem;color:var(--text-muted);margin-bottom:10px;text-align:center;}
@@ -112,9 +119,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-
         <input type="text" class="input" id="playerNameInput" placeholder="Имя" maxlength="15" value="">
 
         <div id="createBtnArea">
-            <button class="btn btn-primary" style="width:100%;margin-bottom:10px;" id="createBtn" onclick="createGame()">✨ СОЗДАТЬ ИГРУ</button>
+            <button class="btn btn-primary" style="width:100%;margin-bottom:10px;" id="createBtn" onclick="createGame()">✨ СОЗДАТЬ ИГРУ (Ведущий)</button>
             <p style="color:var(--text-muted);font-size:.8rem;margin:10px 0;">— или —</p>
-            <button class="btn btn-secondary" style="width:100%;" id="joinBtn" onclick="showJoinField()">🔗 ВОЙТИ В ИГРУ</button>
+            <button class="btn btn-secondary" style="width:100%;" id="joinBtn" onclick="showJoinField()">🔗 ВОЙТИ В ИГРУ (Игрок)</button>
         </div>
 
         <div id="joinField" class="hidden" style="margin-top:15px;">
@@ -134,6 +141,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-
         <div>
             <h1>✨ Зажги Звезду</h1>
             <span style="font-size:.7rem;color:var(--text-muted);">Код: <span id="gameRoomCodeDisplay" style="color:var(--gold);font-weight:700;">----</span></span>
+            <span id="hostBadge" class="host-badge hidden">👑 Ведущий</span>
         </div>
         <div class="header-right">
             <span class="stat-badge">⭐ <span id="totalEnergy">0</span></span>
@@ -170,366 +178,262 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-
             <button class="btn btn-secondary" onclick="openInputModal('talent')">💎 Талант</button>
             <button class="btn btn-secondary" onclick="openInputModal('project')">🚀 Проект</button>
             <button class="btn btn-help" onclick="giveEnergy()">⭐ Энергия +1</button>
+            <button class="btn btn-primary" onclick="nextTurn()">Далее ▶</button>
         </div>
+        
+        <!-- HOST CONTROLS -->
+        <div class="host-controls hidden" id="hostControls">
+            <h3>👑 Панель Ведущего</h3>
+            <div class="host-buttons">
+                <button class="btn btn-host" onclick="forceRoll()">🎲 Бросить за игрока</button>
+                <button class="btn btn-host" onclick="skipTurn()">⏭ Пропустить ход</button>
+                <button class="btn btn-host" onclick="resetGame()">🔄 Сбросить игру</button>
+                <button class="btn btn-host" onclick="forceSync()">🔄 Синхронизация</button>
+            </div>
+        </div>
+
         <div class="lists-section">
-            <div class="list-box"><h3>💎 Мои Таланты</h3><ul class="list-items" id="myTalentsList"></ul></div>
-            <div class="list-box"><h3>🚀 Мои Проекты</h3><ul class="list-items" id="myProjectsList"></ul></div>
+            <div class="list-box">
+                <h3>💎 Мои Таланты</h3>
+                <ul class="list-items" id="myTalentsList"></ul>
+            </div>
+            <div class="list-box">
+                <h3>🚀 Мои Проекты</h3>
+                <ul class="list-items" id="myProjectsList"></ul>
+            </div>
         </div>
     </div>
     <div class="game-footer">
-        <p>Твоя правда — самая большая ценность ✨</p>
-        <a href="https://t.me/ILiveAndILove" target="_blank" class="telegram-btn">🕊 Написать Проводнику Игры</a>
+        <p>🌌 Игра «Зажги Свою Звезду» | Версия 2.0</p>
+        <a href="https://t.me/ILiveAndILove" target="_blank" class="telegram-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.054 5.56-5.022c.242-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/></svg>
+            Поддержка
+        </a>
     </div>
 </div>
 
 <!-- ====== MODALS ====== -->
 <div class="modal-overlay" id="inputModal">
     <div class="modal-box">
-        <h3 id="modalTitle">Записать</h3>
-        <input type="text" class="input" id="modalInput" placeholder="Введите...">
-        <div style="display:flex;gap:10px;">
-            <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Отмена</button>
-            <button class="btn btn-primary" style="flex:1;" onclick="confirmInput()">Записать</button>
+        <h3 id="modalTitle">💎 Записать Талант</h3>
+        <input type="text" class="input" id="modalInput" placeholder="Введите текст..." style="margin-bottom:15px;">
+        <div style="display:flex;gap:10px;justify-content:center;">
+            <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+            <button class="btn btn-primary" onclick="confirmInput()">Записать</button>
         </div>
     </div>
 </div>
+
 <div class="modal-overlay" id="helpModal">
     <div class="modal-box">
         <h3>💛 Помощь Другу</h3>
-        <p style="font-size:.9rem;color:var(--text-muted);margin-bottom:15px;">Кому хотите помочь?</p>
+        <p style="color:var(--text-muted);margin-bottom:10px;">Выберите игрока, которому хотите помочь:</p>
         <div class="player-select-grid" id="helpPlayerGrid"></div>
-        <button class="btn btn-secondary" style="width:100%;margin-top:10px;" onclick="closeHelpModal()">Закрыть</button>
+        <button class="btn btn-secondary" onclick="closeHelpModal()" style="margin-top:10px;">Отмена</button>
     </div>
 </div>
 
-<!-- ====== FIREBASE (Compat - без ES Modules) ====== -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-
+<!-- ====== FIREBASE ====== -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script>
-// ===== FIREBASE CONFIG =====
+// ====== FIREBASE CONFIG ======
 const firebaseConfig = {
-    apiKey: "AIzaSyA8GmjIs2T-yAAjgwg7urg9W0eXVEma-WY",
-    authDomain: "soul-love-109.firebaseapp.com",
-    databaseURL: "https://soul-love-109-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "soul-love-109",
-    storageBucket: "soul-love-109.firebasestorage.app",
-    messagingSenderId: "561989435512",
-    appId: "1:561989435512:web:c03ee8536507036db26d8d"
+    apiKey: "AIzaSyBQwLpKzV5e3xZ9Y2mN8pR7tU6vW4xY0zA",
+    authDomain: "star-game-online.firebaseapp.com",
+    databaseURL: "https://star-game-online-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "star-game-online",
+    storageBucket: "star-game-online.appspot.com",
+    messagingSenderId: "123456789012",
+    appId: "1:123456789012:web:abcdef1234567890"
 };
 
-// ===== GLOBALS =====
+// Initialize Firebase
 let db = null;
-let myId = '';
+try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    console.log('✅ Firebase initialized');
+} catch (e) {
+    console.error('❌ Firebase init error:', e);
+}
+
+// ====== GAME STATE ======
+let myId = 'player_' + Math.random().toString(36).substr(2, 9);
 let myName = '';
 let roomId = null;
 let isHost = false;
 let roomData = null;
 let unsubscribe = null;
 
-// ===== INIT =====
-try {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.database();
-    console.log('Firebase initialized OK');
-    showStatus('✅ База данных подключена', 'success');
-} catch (e) {
-    console.error('Firebase init error:', e);
-    showStatus('❌ Ошибка подключения: ' + e.message, 'error');
-}
-
-myId = localStorage.getItem('starGameUserId');
-if (!myId) {
-    myId = 'user_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('starGameUserId', myId);
-}
-myName = localStorage.getItem('starGamePlayerName') || '';
-document.getElementById('playerNameInput').value = myName;
-
-// ===== UI HELPERS =====
-function showStatus(msg, type) {
-    const el = document.getElementById('statusInfo');
-    if (!el) return;
-    el.textContent = msg;
-    el.className = 'hidden ' + type;
-    if (type === 'waiting') {
-        el.classList.remove('hidden');
-    } else {
-        el.classList.remove('hidden');
-        setTimeout(() => { el.classList.add('hidden'); }, 4000);
-    }
-}
-
-function initDice() {
-    const d = {
-        1: [[1, 1]],
-        2: [[0, 0], [2, 2]],
-        3: [[0, 0], [1, 1], [2, 2]],
-        4: [[0, 0], [0, 2], [2, 0], [2, 2]],
-        5: [[0, 0], [0, 2], [1, 1], [2, 0], [2, 2]],
-        6: [[0, 0], [0, 2], [1, 0], [1, 2], [2, 0], [2, 2]]
-    };
-    for (let f = 1; f <= 6; f++) {
-        const el = document.getElementById('face' + f);
-        if (!el) continue;
-        el.innerHTML = '';
-        d[f].forEach(([r, c]) => {
-            const dot = document.createElement('div');
-            dot.className = 'dice-dot';
-            dot.style.gridRow = r + 1;
-            dot.style.gridColumn = c + 1;
-            el.appendChild(dot);
-        });
-    }
-}
-initDice();
-
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    if (!t) return;
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-function createStars() {
-    const sf = document.getElementById('starfield');
-    if (!sf) return;
-    for (let i = 0; i < 100; i++) {
-        const s = document.createElement('div');
-        s.className = 'star';
-        s.style.left = Math.random() * 100 + '%';
-        s.style.top = Math.random() * 100 + '%';
-        s.style.width = (Math.random() * 3 + 1) + 'px';
-        s.style.height = s.style.width;
-        s.style.setProperty('--duration', (Math.random() * 4 + 2) + 's');
-        s.style.setProperty('--min-opacity', Math.random() * 0.3 + 0.1);
-        sf.appendChild(s);
-    }
-}
-createStars();
-
-// ===== AUDIO =====
-let audioCtx = null;
-function playSound(type) {
-    try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const now = audioCtx.currentTime;
-        if (type === 'roll') {
-            const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.5, audioCtx.sampleRate);
-            const data = buf.getChannelData(0);
-            for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-            const noise = audioCtx.createBufferSource();
-            noise.buffer = buf;
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(1000, now);
-            filter.frequency.exponentialRampToValueAtTime(100, now + 0.5);
-            const gain = audioCtx.createGain();
-            gain.gain.setValueAtTime(0.5, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-            noise.connect(filter);
-            filter.connect(gain);
-            gain.connect(audioCtx.destination);
-            noise.start(now);
-        } else if (type === 'card') {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(523.25, now);
-            osc.frequency.linearRampToValueAtTime(1046.5, now + 0.5);
-            gain.gain.setValueAtTime(0, now);
-            gain.gain.linearRampToValueAtTime(0.3, now + 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 2);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(now);
-            osc.stop(now + 2);
-        } else if (type === 'energy') {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.frequency.setValueAtTime(800, now);
-            osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(now);
-            osc.stop(now + 0.2);
-        }
-    } catch (e) {
-        console.log('Audio error:', e);
-    }
-}
-
-// ===== DECKS =====
+// ====== DECKS ======
 const TREASURE_DECK = [
-    {num:1,text:"За что тебя часто ругали в детстве?"},
-    {num:2,text:"В чем твоя самая большая слабость?"},
-    {num:3,text:"Чего ты больше всего стыдишься?"},
-    {num:4,text:"Чего ты больше всего боишься?"},
-    {num:5,text:"Что дается тебе легко, а ты не считаешь это чем-то особенным?"},
-    {num:6,text:"За что тебя благодарят люди?"},
-    {num:7,text:"Когда ты чувствуешь в себе огонь жизни по-настоящему? Вспомни 3 таких момента!"},
-    {num:8,text:"Что ты хочешь делать постоянно, не уставая?"},
-    {num:9,text:"Какой процесс затягивает тебя целиком и там нет места мыслям?"},
-    {num:10,text:"Что ты делаешь, чтобы отдохнуть и наполниться энергией?"},
-    {num:11,text:"Какие таланты тебе подарила природа?"},
-    {num:12,text:"Что такое бесполезное ты любишь делать просто так, нипочему?"},
-    {num:13,text:"О чем ты мечтаешь снова и снова?"},
-    {num:14,text:"Представь, что ты супергерой. Какой, что ты делаешь, какова твоя сила?"},
-    {num:15,text:"Что у тебя всегда случается легко? Где по жизни никогда не приходится стараться?"},
-    {num:16,text:"Как люди меняются рядом с тобой? Что в них оживает?"},
-    {num:17,text:"За чем к тебе чаще всего приходят люди?"},
-    {num:18,text:"За что тебя чаще всего благодарят люди?"},
-    {num:19,text:"Как ты можешь соединять людей, идеи?"},
-    {num:20,text:"Если бы тебя попросили научить чему-то ребенка, что бы это было?"},
-    {num:21,text:"Что подмечают в тебе люди, что ты не считаешь чем-то особенным?"},
-    {num:22,text:"Как и что любят творить твои руки?"},
-    {num:23,text:"Какое движение приносит твоему телу радость?"},
-    {num:24,text:"Что ты создаешь, когда тебе скучно?"},
-    {num:25,text:"Что ты делаешь и прямо теряешь счет времени?"},
-    {num:26,text:"Что наполняет тебя энергией, несмотря на усталость?"},
-    {num:27,text:"Представь, что ты стоишь на сцене, и весь мир тебя слушает. О чем ты говоришь?"},
-    {num:28,text:"Если бы у тебя было бесконечно времени и ресурсов, что бы ты делал(а)?"},
-    {num:29,text:"Какой образ у тебя всплывает, когда ты слышишь слово «Дар»?"},
-    {num:30,text:"Какой твой «долг» может оказаться твоим нераскрытым талантом?"},
-    {num:31,text:"Что ты делаешь, когда ленишься?"},
-    {num:32,text:"Каким/какой ты становишься рядом с теми, кого любишь?"},
-    {num:33,text:"Что в твоей жизни всегда случается само, без усилий?"},
-    {num:34,text:"Что ты продолжаешь делать, даже когда нет результата?"},
-    {num:35,text:"Какое твое качество ты больше всего недооцениваешь?"},
-    {num:36,text:"Что у других всегда случается в твоем присутствии?"},
-    {num:37,text:"Какая игра тебе нравилась больше всего в детстве?"},
-    {num:38,text:"Где, когда и рядом с кем ты чувствуешь себя максимально расслабленно?"},
-    {num:39,text:"Душа моя, как я могу порадовать тебя прямо сейчас?"},
-    {num:40,text:"Если бы все твои желания уже сбылись, что бы ты делал(а) после этого?"},
-    {num:41,text:"Если бы вопрос денег был решен навсегда, как бы ты проводил(а) свои дни?"},
-    {num:42,text:"Какой навык тебе удалось освоить неожиданно легко?"},
-    {num:43,text:"В какой роли ты чувствуешь себя гармонично и естественно?"},
-    {num:44,text:"Что ты делаешь, когда хочешь сделать приятно себе или близким?"},
-    {num:45,text:"Если бы твоя душа могла выразить себя одним действием, что бы это было?"},
-    {num:46,text:"Что ты такого замечаешь в людях и ситуациях, что ускользает от взгляда других?"},
-    {num:47,text:"Что ты можешь делать снова и снова, и тебе не становится скучно?"},
-    {num:48,text:"Что мне сегодня подсказывает Источник мой?"},
-    {num:49,text:"Источник мой, куда мне направить мое внимание прямо сейчас?"},
-    {num:50,text:"Источник мой, куда я сейчас сливаю свою энергию?"},
-    {num:51,text:"Источник мой, как мне прямо сейчас наполниться энергией?"},
-    {num:52,text:"Источник мой, как мне жить так, чтобы жизнь во мне увеличивалась?"},
-    {num:53,text:"Тело мое, что ты мне сейчас подсказываешь?"},
-    {num:54,text:"Что ты в себе обесцениваешь?"},
-    {num:55,text:"Как ты ощущаешь себя, когда ничего не делаешь?"},
-    {num:56,text:"Представь, что у тебя есть абсолютная свобода быть собой. Как бы ты жил(а)?"},
-    {num:57,text:"Что тебя радует? Вспомни 10 пунктов из твоего списка радостей."},
-    {num:58,text:"Вспомни три момента, когда время просто исчезло. Что ты делал(а) тогда?"},
-    {num:59,text:"За 3 минуты создай из любых подручных материалов то, что передает твое текущее состояние."},
-    {num:60,text:"Закрой глаза и представь свой главный дар. Каких он цветов? Закрась этими цветами целый лист."},
-    {num:61,text:"Встань и прими позу, которая отражает твой скрытый талант."},
-    {num:62,text:"Встань и подвигайся так, как тебе идет. Можешь включить любимую музыку."},
-    {num:63,text:"Пройдись так, как ходил бы человек, который полностью уверен в своем таланте."},
-    {num:64,text:"Издай звук(не слово!), который выражает твою внутреннюю силу."},
-    {num:65,text:"Придумай и спой короткую рекламную песенку о своем таланте."},
-    {num:66,text:"Надиктуй на диктофон 2-3 фразы о полном счастье и реализации талантов."},
-    {num:67,text:"Отбей ладонями ритм, который мог бы быть саундтреком к проявлению твоего дара."},
-    {num:68,text:"Потри ладони друг о друга 30 секунд, ощупай энергетическое поле."},
-    {num:69,text:"Представь, что ты держишь в руках свой талант. Какой он? Подари его любому игроку."},
-    {num:70,text:"Создай коллаж из 3-5 картинок, которые цепляют тебя."},
-    {num:71,text:"Сядь напротив «тени». Задай ей вопрос: «Какой Дар ты для меня хранишь?»."},
-    {num:72,text:"Наведи порядок в одном уголке, представляя как расчищаешь место для таланта."},
-    {num:73,text:"Посмотри себе в глаза в зеркале и поблагодари себя за один навык."},
-    {num:74,text:"Представь, что ты из будущего, где все дары раскрыты. Напиши письмо себе."},
-    {num:75,text:"Стань проводником своего таланта на 10 минут."},
-    {num:76,text:"Нарисуй круг, помести в него руки и повторяй: «Я здесь. Мой дар здесь»."},
-    {num:77,text:"Повернись к соседу слева и закончи фразу: «Мне кажется, твоя суперсила в том, что ты...»"},
-    {num:78,text:"Используя только жесты, «подари» соседу справа тот дар, который ты в нем чувствуешь."},
-    {num:79,text:"Создай схематичную карту для другого игрока. Покажи, где его талант сиял сильнее."},
-    {num:80,text:"Встаньте спиной к спине с партнером. Какой мост вы могли бы построить вместе?"},
-    {num:81,text:"Проведи с партнером интервью. Единственный вопрос: «Расскажи о деле, в котором ты — гений.»"},
-    {num:82,text:"Создайте с партнером импровизированный танец сонастроенных талантов."},
-    {num:83,text:"Один «глина», другой «скульптор». Создай позу, выражающую талант."},
-    {num:84,text:"Все становятся в круг. Каждый по очереди шагает в центр, остальные называют дары."},
-    {num:85,text:"Придумай короткое благословение для таланта игрока справа — как заклинание."},
-    {num:86,text:"Возьми предмет-символ Источника. «Я благодарен Тебе за то, что Ты научил меня...»"},
-    {num:87,text:"Ты — «цветок», сосед — «пчела». Предложи 3 способа проявить талант."},
-    {num:88,text:"Скажи партнеру: «Я вижу в тебе огромную силу. Ты мог(ла) бы раскрыть ее еще больше, если бы...»"},
-    {num:89,text:"Вся группа создает «Заклинание Раскрытия». Каждый говорит одно слово-пожелание."},
-    {num:90,text:"Вся группа создает общий арт-объект силы талантов."},
-    {num:91,text:"Стоя в кругу, по очереди отправляйте дар в центр и расскажите об общем кристалле."},
-    {num:92,text:"Шепни соседу: «Я делюсь с тобой щепоткой своего дара». Передавайте по кругу."},
-    {num:93,text:"Вместе придумайте мелодию и пропойте: «Мы — Любовь, мы — Свет, мы — Творцы!»"},
-    {num:94,text:"Выходите в центр по очереди. Остальные добавляют эпитет: «Ольга-Утешительница»."},
-    {num:95,text:"Расскажи о «Проекте Мечты». Остальные дарят Энергию Любви."},
-    {num:96,text:"Группа выбирает участника. Каждый говорит: «Я вижу, как твой дар проявляется...»"},
-    {num:97,text:"Придумайте «Кодекс Горящих Звезд»: 3-5 принципов поддержки."},
-    {num:98,text:"Составьте шутливый гороскоп для каждого, основываясь на талантах."},
-    {num:99,text:"Группа вокруг одного. Каждый обнимает и говорит: «Я благословляю дар...»"},
-    {num:100,text:"Руки к центру. По очереди говорите, какой талант вы вносите в общий свет."},
-    {num:101,text:"Возьмитесь за руки. Загадайте желание о таланте соседа справа. Шепните ему."},
-    {num:102,text:"Группа творит для одного участника (рисунок, песню), чтобы талант засиял."},
-    {num:103,text:"Нарисуй герб силы: щит, животное-сила, девиз."},
-    {num:104,text:"Представь дар как стихию. Как она проявляется в теле?"},
-    {num:105,text:"Открой книгу наугад. Это ответ на вопрос: «Что важно узнать о даре?»."},
-    {num:106,text:"Возьми любой предмет и подари его как символ дара другому игроку."},
-    {num:107,text:"На полоске: слева — что отпускаешь, справа — шаг к новому."},
-    {num:108,text:"Спроси у 7-летнего себя: «В чем моя настоящая сила?». Нарисуй ответ."},
-    {num:109,text:"Ведущий смотрит в глаза. Поделись, что почувствовал(а)."}
+    {num:1,text:"За что тебя часто ругали в детстве?",practice:"Вспомни и поблагодари за урок."},
+    {num:2,text:"В чем твоя самая большая слабость?",practice:"Прими это как часть себя."},
+    {num:3,text:"Чего ты больше всего стыдишься?",practice:"Скажи: «Я принимаю себя»."},
+    {num:4,text:"Чего ты больше всего боишься?",practice:"Вдохни страх, выдохни доверие."},
+    {num:5,text:"Что дается тебе легко, а ты не считаешь это особенным?",practice:"Это твой дар! Признай его."},
+    {num:6,text:"За что тебя благодарят люди?",practice:"Позволь себе принять благодарность."},
+    {num:7,text:"Когда ты чувствуешь в себе огонь жизни?",practice:"Вспомни 3 таких момента."},
+    {num:8,text:"Что ты хочешь делать постоянно, не уставая?",practice:"Это clue к твоему предназначению."},
+    {num:9,text:"Какой процесс затягивает тебя целиком?",practice:"В потоке нет мыслей — только жизнь."},
+    {num:10,text:"Что ты делаешь, чтобы отдохнуть и наполниться?",practice:"Сделай это прямо сейчас."},
+    {num:11,text:"Какие таланты тебе подарила природа?",practice:"Назови 3 вслух."},
+    {num:12,text:"Что бесполезное ты любишь делать просто так?",practice:"Бесполезное = чистая радость."},
+    {num:13,text:"О чем ты мечтаешь снова и снова?",practice:"Мечта не уходит — она ждёт."},
+    {num:14,text:"Представь, что ты супергерой. Какая у тебя сила?",practice:"Почувствуй её в теле."},
+    {num:15,text:"Что у тебя всегда случается легко?",practice:"Где не приходится стараться?"},
+    {num:16,text:"Как люди меняются рядом с тобой?",practice:"Что в них оживает?"},
+    {num:17,text:"За чем к тебе чаще всего приходят люди?",practice:"Это твой дар им."},
+    {num:18,text:"За что тебя благодарят чаще всего?",practice:"Прими это как истину."},
+    {num:19,text:"Как ты можешь соединять людей, идеи?",practice:"Ты — мост."},
+    {num:20,text:"Если бы тебя попросили научить ребенка, что бы это было?",practice:"Это твоё знание мира."},
+    {num:21,text:"Что подмечают в тебе люди, что ты не считаешь особенным?",practice:"Спроси друга."},
+    {num:22,text:"Как и что любят творить твои руки?",practice:"Дай им свободу."},
+    {num:23,text:"Какое движение приносит телу радость?",practice:"Станцуй это."},
+    {num:24,text:"Что ты создаешь, когда тебе скучно?",practice:"Скука — портал к творчеству."},
+    {num:25,text:"Что ты делаешь и теряешь счет времени?",practice:"Это состояние потока."},
+    {num:26,text:"Что наполняет энергией, несмотря на усталость?",practice:"Сделай это сегодня."},
+    {num:27,text:"Ты на сцене, весь мир слушает. О чем говоришь?",practice:"Это твоя миссия."},
+    {num:28,text:"Бесконечно времени и ресурсов — что бы делал?",practice:"Это твой истинный путь."},
+    {num:29,text:"Какой образ всплывает на слово «Дар»?",practice:"Нарисуй его."},
+    {num:30,text:"Какой «долг» может быть нераскрытым талантом?",practice:"Переосмысли obligation."},
+    {num:31,text:"Что ты делаешь, когда ленишься?",practice:"Лень — сигнал души."},
+    {num:32,text:"Каким становишься рядом с теми, кого любишь?",practice:"Это твоя настоящая форма."},
+    {num:33,text:"Что в твоей жизни случается само, без усилий?",practice:"Доверься этому."},
+    {num:34,text:"Что продолжаешь делать, даже когда нет результата?",practice:"Это любовь к процессу."},
+    {num:35,text:"Какое качество ты недооцениваешь?",practice:"Возвысь его в себе."},
+    {num:36,text:"Что у других случается в твоём присутствии?",practice:"Ты — катализатор."},
+    {num:37,text:"Какая игра нравилась больше всего в детстве?",practice:"В ней ключ к радости."},
+    {num:38,text:"Где чувствуешь себя максимально расслабленно?",practice:"Вернись туда мысленно."},
+    {num:39,text:"«Душа моя, как я могу порадовать тебя прямо сейчас?»",practice:"Слушай ответ."},
+    {num:40,text:"Все желания сбылись. Что делаешь после?",practice:"Как выглядит твой день?"},
+    {num:41,text:"Вопрос денег решен. Как проводишь дни?",practice:"Это твоя свобода."},
+    {num:42,text:"Какой навык освоил неожиданно легко?",practice:"Это природный дар."},
+    {num:43,text:"В какой роли чувствуешь гармонично?",practice:"Организатор, творец, целитель?"},
+    {num:44,text:"Что делаешь, чтобы сделать приятно себе или близким?",practice:"Это язык твоей любви."},
+    {num:45,text:"Если бы душа выразила себя одним действием — каким?",practice:"Сделай это."},
+    {num:46,text:"Что замечаешь в людях, что ускользает от других?",practice:"Это твой дар видения."},
+    {num:47,text:"Что делаешь снова и снова без скуки?",practice:"Это твоё призвание."},
+    {num:48,text:"«Источник мой, куда направить внимание сейчас?»",practice:"Следуй импульсу."},
+    {num:49,text:"«Источник мой, куда сливаю энергию?»",practice:"Перекрой утечки."},
+    {num:50,text:"«Источник мой, как наполниться энергией?»",practice:"Прими ответ."},
+    {num:51,text:"«Источник мой, как жить, чтобы жизнь увеличивалась?»",practice:"Воплощай ответ."},
+    {num:52,text:"«Тело мое, что подсказываешь?»",practice:"Слушай мудрость тела."},
+    {num:53,text:"Что в себе обесцениваешь?",practice:"Восстанови ценность."},
+    {num:54,text:"Как ощущаешь себя, когда ничего не делаешь?",practice:"Прими это состояние."},
+    {num:55,text:"Абсолютная свобода быть собой — как бы жил?",practice:"Начни сейчас."},
+    {num:56,text:"Что тебя радует? Вспомни 10 пунктов.",practice:"Создай список радостей."},
+    {num:57,text:"Три момента, когда время исчезло. Что делал?",practice:"Вернись в поток."},
+    {num:58,text:"Создай из подручных материалов своё состояние.",practice:"Каракуля, стих, фото."},
+    {num:59,text:"Представь дар. Каких он цветов? Закрась лист.",practice:"Прочувствуй энергию."},
+    {num:60,text:"Прими позу скрытого таланта. Замри. Прислушайся.",practice:"Тело знает."},
+    {num:61,text:"Подвигайся так, как тебе идёт.",practice:"Включи музыку, танцуй."},
+    {num:62,text:"Пройдись как человек, уверенный в таланте.",practice:"Что изменилось?"},
+    {num:63,text:"Издай звук внутренней силы.",practice:"Рык, напев, гудение."},
+    {num:64,text:"Спой рекламную песенку о таланте.",practice:"Можно смешно!"},
+    {num:65,text:"Надиктуй 2-3 фразы о полном счастье.",practice:"Что чувствуешь?"},
+    {num:66,text:"Отбей ритм саундтрека к дару.",practice:"Ладонями."},
+    {num:67,text:"Потри ладони 30 сек. Разведи. Что чувствуешь?",practice:"Это твоё поле силы."},
+    {num:68,text:"Представь талант как предмет. Подари игроку.",practice:"Почувствуй обмен."},
+    {num:69,text:"Вырежи 3-5 картинок, создай коллаж.",practice:"Что видишь?"},
+    {num:70,text:"Сядь напротив «тени». Спроси: «Какой Дар хранишь?»",practice:"Слушай ответ."},
+    {num:71,text:"Наведи порядок в уголке. Расчисти пространство таланта.",practice:"Физически и ментально."},
+    {num:72,text:"В зеркало: поблагодари себя за навык.",practice:"Вслух, с чувством."},
+    {num:73,text:"Из будущего: напиши письмо себе настоящему.",practice:"Что говорит твой раскрывшийся Я?"},
+    {num:74,text:"10 минут будь проводником таланта.",practice:"Если дар — гармония, наведи порядок."},
+    {num:75,text:"Нарисуй круг, помести руки: «Я здесь. Мой дар здесь».",practice:"Заземлись."},
+    {num:76,text:"Соседу слева: «Твоя суперсила в том, что ты...»",practice:"Заверши фразу."},
+    {num:77,text:"Жестами подари соседу дар, который в нём чувствуешь.",practice:"Без слов."},
+    {num:78,text:"Создай карту для игрока: где талант сиял сильнее.",practice:"Покажи моменты силы."},
+    {num:79,text:"Спина к спине: какой мост построите вместе?",practice:"Объедините таланты."},
+    {num:80,text:"Интервью партнеру: «Расскажи о деле, где ты — гений.»",practice:"3 минуты."},
+    {num:81,text:"Танец сонастроенных талантов с партнером.",practice:"Движение переходит в движение."},
+    {num:82,text:"«Глина» и «скульптор»: создай позу таланта.",practice:"Почувствуй форму."},
+    {num:83,text:"Круг: каждый в центр, остальные называют дары.",practice:"Прими всё."},
+    {num:84,text:"Благословение таланту игрока справа — заклинание.",practice:"«Сила сердца превращает в красоту»."},
+    {num:85,text:"Предмет Источника в ладони: «Благодарен за...»",practice:"Закончи фразу."},
+    {num:86,text:"Ты — «цветок», игрок — «пчела»: 3 способа проявить талант.",practice:"Поменяйтесь ролями."},
+    {num:87,text:"«Вижу силу. Раскроешь больше, если...»",practice:"Скажи партнеру."},
+    {num:88,text:"Групповое заклинание: по слову-пожеланию.",practice:"Свет, Радость, Смелость!"},
+    {num:89,text:"Общий арт-объект за 10 минут: объединенная сила.",practice:"Коллаж, рисунок, скульптура."},
+    {num:90,text:"Круг, руки на плечах: дар в центр, какой кристалл?",practice:"Визуализируйте."},
+    {num:91,text:"Шепни справа: «Делюсь щепоткой дара [талант]».",practice:"Дар обходит круг."},
+    {num:92,text:"Мелодия вместе: «Мы — Любовь, мы — Свет, мы — Творцы!»",practice:"Пропойте."},
+    {num:93,text:"Круг: эпитет к имени — «Ольга-Утешительница».",practice:"Для всех."},
+    {num:94,text:"Проект Мечты: кто присоединяется? Одарите Энергией.",practice:"Слова поддержки."},
+    {num:95,text:"«Вижу, как дар [название] проявляется — вот как».",practice:"Для одного участника."},
+    {num:96,text:"Кодекс Горящих Звезд: 3-5 принципов поддержки.",practice:"«Верим друг в друга»."},
+    {num:97,text:"Шутливый гороскоп для каждого по талантам.",practice:"Все вместе."},
+    {num:98,text:"Круг вокруг одного: объятие + «Благословляю дар...»",practice:"Для всех по очереди."},
+    {num:99,text:"Круг, руки к центру: какой талант вносишь в свет?",practice:"Для общего блага."},
+    {num:100,text:"За руки по кругу: загадай желание соседу о таланте.",practice:"Шепни по сигналу."},
+    {num:101,text:"5 минут творят для участника: рисунок, план, песня.",practice:"Повторите с другими."},
+    {num:102,text:"Герб силы: щит, животное, девиз.",practice:"Нарисуй."},
+    {num:103,text:"Дар — стихия. Как проявляется в теле?",practice:"Огонь, вода, воздух, земля."},
+    {num:104,text:"Книга на случайном месте: ответ о даре.",practice:"Задай вопрос, открой."},
+    {num:105,text:"Подари предмет как дар игроку: «Дарю тебе [дар]».",practice:"С чувством."},
+    {num:106,text:"Полоска: отпустить / шаг к новой главе.",practice:"Напиши с двух сторон."},
+    {num:107,text:"7-летний ты: «В чем сила?» Первый образ — ключ.",practice:"Нарисуй за 2 мин."},
+    {num:108,text:"Ведущий смотрит в глаза минуту. Что почувствовал?",practice:"Поделись."},
+    {num:109,text:"«Источник мой, куда направить внимание сейчас?»",practice:"Следуй первому импульсу."},
+    {num:110,text:"«Источник мой, куда сливаю энергию?»",practice:"Осознай утечки."}
 ];
 
 const STRENGTH_DECK = [
-    {num:1,text:"Иногда ты не веришь, что получится. А что если талант просто ждет доверия?",practice:"Вспомни момент, когда вышло легко. Найди чувство «Я могу!»."},
-    {num:2,text:"Ты на пороге нового. Что поможет сделать первый шаг, даже если страшно?",practice:"Скажи: «Я разрешаю себе просто попробовать». Сделай маленький шаг."},
-    {num:3,text:"Иногда твоя сила пугает. Что яркое ты прячешь от мира?",practice:"Улыбнись в зеркало. «Вся моя мощь для меня!»."},
-    {num:4,text:"Когда стараешься понравиться всем, теряешь голос. Что ты хочешь сказать миру по-своему?",practice:"Выдохни чужое. Произнеси вслух важное."},
-    {num:5,text:"Хочется спрятать боль. А что если в этом твоя глубина?",practice:"Ладонь на грудь. «Я позволяю себе быть собой»."},
-    {num:6,text:"Все застыло? Может, талант растет тихо, как семечко под землей?",practice:"Представь, как внутри что-то распускается. Доверься процессу."},
-    {num:7,text:"«Они лучше». А что в тебе есть, чего нет ни у кого?",practice:"Назови 3 вещи, которые нравишься в себе."},
-    {num:8,text:"Все идет не по плану. А что если это тропинка от Источника?",practice:"Скажи: «Я доверяю Потоку Жизни»."},
-    {num:9,text:"Не знаешь, что будет дальше? Сделай шаг из любви, а не страха.",practice:"Вспомни, когда сердце вело верно. Ощущай опору."},
-    {num:10,text:"Два пути: безопасный и манящий. Что выбирает сердце?",practice:"Почувствуй, в каком пути больше жизни."},
-    {num:11,text:"Люди подсвечивают то, что мы не хотим видеть. Что в поведении других цепляет?",practice:"Чему раздражающий человек может научить?"},
-    {num:12,text:"Делают больно — хочется закрыться. Какие чувства ты удерживаешь?",practice:"Скажи мысленно обидчику: «Я освобождаю нас обоих»."},
-    {num:13,text:"Тебя не слышат? А что если другой говорит на своем языке любви?",practice:"Что ты чувствовал(а) тогда? Наблюдай, как открывается сердце."},
-    {num:14,text:"Позволяешь ли другим быть собой, не теряя себя?",practice:"Скажи: «Я выбираю видеть свет в каждом»."},
-    {num:15,text:"Любовь — это иногда твердо сказать «нет». Кому или чему?",practice:"Почувствуй внутренний компас «да» и «нет»."},
-    {num:16,text:"Быть рядом страшно. Что мешает открыться глубже?",practice:"Вспомни, с кем спокойно. Тепло возвращается через доверие."},
-    {num:17,text:"Каждый человек — звезда. Что ты можешь отпраздновать в себе?",practice:"Найди свою звезду и позволь светить."},
-    {num:18,text:"Ждал любви от других? А что если можешь дать её себе?",practice:"Напиши письмо от Источника себе."},
-    {num:19,text:"Кого или что пора отпустить с благодарностью?",practice:"«Спасибо, что был(а)». Идите дальше свободными."},
-    {num:20,text:"Видя свет в другом, ты пробуждаешь его в себе. Как принести добро сегодня?",practice:"Сделай для игрока то, что придет в потоке."},
-    {num:21,text:"Слышишь тихий голос «Пора»? Что он шепчет?",practice:"Прислушайся. Почувствуй направление."},
-    {num:22,text:"Когда перестаешь бороться, все складывается. Где пора отпустить контроль?",practice:"Представь реку жизни. Плыви по ней."},
-    {num:23,text:"Что помогает подняться в трудные моменты?",practice:"Вспомни опору: людей, качества."},
-    {num:24,text:"Сила пробуждается, когда выбираешь верить.",practice:"«Я верю, даже если пока не вижу»."},
-    {num:25,text:"Сила — это иногда умение быть нежным. Где быть добрее к себе?",practice:"Обними себя. Сила растет из заботы."},
-    {num:26,text:"Сила — это тишина перед рассветом. Что подсказывает тишина?",practice:"Послушай дыхание."},
-    {num:27,text:"Что ты несешь слишком долго?",practice:"С выдохом отпускай лишнее."},
-    {num:28,text:"Когда ты в силе, мир светится. Что помогает светиться?",practice:"Вспомни радость быть собой."},
-    {num:29,text:"Какой выбор приблизит к себе настоящему?",practice:"Сделай маленький осознанный шаг."},
-    {num:30,text:"Сила — это то, что ты отдаешь. Что подарить сегодня?",practice:"Поделись словом или вниманием."},
-    {num:31,text:"Что ты чувствуешь прямо сейчас, если просто побудешь с этим?",practice:"Послушай чувства как друга."},
-    {num:32,text:"Какой ответ в тебе уже есть, но ты не решаешься услышать?",practice:"«Что я уже знаю о себе?» Слушай сердце."},
-    {num:33,text:"Что продолжает светиться в тебе, даже когда темно?",practice:"Вспомни трудный момент, когда не сдался. Это твой свет."},
-    {num:34,text:"Что внутри просит простить и отпустить?",practice:"Обними ту часть себя, которую не замечал."},
-    {num:35,text:"Что бы ты сделал(а), если бы разрешил(а) себе быть собой?",practice:"Страх тает. Кто ты без страха?"},
-    {num:36,text:"Что ты готов(а) начать заново сегодня?",practice:"Почувствуй свежесть нового дня."},
-    {num:37,text:"Какой необъяснимый тихий зов ты чувствуешь?",practice:"Доверься. Первый шаг откроет путь."},
-    {num:38,text:"В чем твое волшебство сегодня?",practice:"Ты — чудо."},
-    {num:39,text:"Есть ли внутри место полного спокойствия?",practice:"Найди это место."},
-    {num:40,text:"Кого или что ты готов(а) принять сегодня?",practice:"Позволь любить, не меняя."},
-    {num:41,text:"Твой внутренний свет — буря очищения. В чем совершенство?",practice:"Вспомни перемены рядом с тобой."},
-    {num:42,text:"Как ты реагируешь, когда кто-то раздражается рядом?",practice:"«Люди — мои отражения». Что я вижу?"},
-    {num:43,text:"Быть собой значит быть неудобным. Вспомни ситуацию для смелости.",practice:"Истина — чистая сила Жизни."},
-    {num:44,text:"Ты вскрываешь ложь взглядом. Умеешь ли делать это с Любовью?",practice:"Как поступить иначе?"},
-    {num:45,text:"Где в тебе сила, очищающая через боль?",practice:"«Я позволяю Жизни быть мягкой и сильной»."},
-    {num:46,text:"Твой Дар — осветить правду. Как принять его без вины?",practice:"Пусть правда пройдет сквозь сердце."},
-    {num:47,text:"Какую силу ты прячешь, потому что она пугает других?",practice:"«Я не угроза. Я пробуждение Жизни!»."},
-    {num:48,text:"Рядом с тобой рушится неистинное. Что ты чувствуешь?",practice:"Это благословение."},
-    {num:49,text:"Ты чувствуешь боль мира. Где принимаешь чужую тьму за свою?",practice:"Возвращай лишнее Источнику."},
-    {num:50,text:"Любовь иногда резко будит спящих. Готов(а) быть проводником?",practice:"«Я доверяю своей силе. Она служит Жизни»."}
+    {num:1,text:"Иногда не веришь, что получится. А что если талант ждет доверия?",practice:"Вспомни момент «Я могу!»."},
+    {num:2,text:"На пороге нового. Что поможет сделать первый шаг?",practice:"«Разрешаю попробовать». Действуй."},
+    {num:3,text:"Сила пугает. Что яркое ты прячешь?",practice:"«Вся мощь для меня!» Улыбнись себе."},
+    {num:4,text:"Пытаясь понравиться всем, теряешь голос. Что сказать миру?",practice:"Выдохни чужое. Скажи своё."},
+    {num:5,text:"Хочется спрятать боль. А если в этом глубина?",practice:"«Позволяю быть собой»."},
+    {num:6,text:"Ничего не происходит? Талант растет как семечко.",practice:"Доверься процессу."},
+    {num:7,text:"«Они лучше». А что в тебе уникально?",practice:"3 вещи, которые нравишься в себе."},
+    {num:8,text:"Все наперекосяк. А если Источник показывает тропинку?",practice:"«Доверяю Потоку»."},
+    {num:9,text:"Не знаешь, что дальше. Шаг к мечте из любви?",practice:"Вспомни, когда сердце вело."},
+    {num:10,text:"Два пути: безопасный и пугающий. Что выбирает сердце?",practice:"Где больше жизни?"},
+    {num:11,text:"Люди подсвечивают, что не хотим видеть. Что цепляет?",practice:"Чему учит отражение?"},
+    {num:12,text:"Больно — хочется закрыться. Какие чувства удерживаешь?",practice:"«Освобождаю нас обоих»."},
+    {num:13,text:"Не слышат. А если другой говорит на языке любви?",practice:"«Что я чувствовал тогда?»"},
+    {num:14,text:"Позволяешь ли людям свободу быть собой?",practice:"«Вижу свет в каждом»."},
+    {num:15,text:"Любовь — иногда честно сказать «нет». Кому?",practice:"Рука на живот: где «да» и «нет»?"},
+    {num:16,text:"Быть рядом страшно. Что мешает открыться?",practice:"Вспомни, с кем спокойно."},
+    {num:17,text:"У каждого свой путь. Что отпраздновать в себе?",practice:"Найди свою звезду."},
+    {num:18,text:"Ждал любви от других. А что если дать себе?",practice:"Письмо от Источника."},
+    {num:19,text:"Люди приходят и уходят. Кого отпустить с благодарностью?",practice:"«Спасибо, что был»."},
+    {num:20,text:"Видишь свет в другом — пробуждаешь в себе. Как помочь?",practice:"Улыбка, помощь, объятие."},
+    {num:21,text:"Тихий голос: «Пора». Что шепчет?",practice:"Не спеши понимать — почувствуй."},
+    {num:22,text:"Перестаешь бороться — все складывается. Где отпустить контроль?",practice:"Река жизни несет."},
+    {num:23,text:"Что помогает подняться в трудные моменты?",practice:"3 опоры: люди, качества, чувства."},
+    {num:24,text:"Сила пробуждается, когда выбираешь верить.",practice:"«Верю, даже если не вижу»."},
+    {num:25,text:"Сила — иногда нежность. Где быть добрее к себе?",practice:"Обними себя."},
+    {num:26,text:"Сила — тишина перед рассветом. Что подсказывает тишина?",practice:"Послушай дыхание."},
+    {num:27,text:"Что несешь слишком долго?",practice:"С выдохом отпускай."},
+    {num:28,text:"В силе мир светится. Что помогает светиться?",practice:"Вспомни радость быть собой."},
+    {num:29,text:"Выбор — луч в будущее. Какой выбор приблизит к себе?",practice:"Маленький осознанный шаг."},
+    {num:30,text:"Сила — что отдаешь. Что подарить из любви?",practice:"Слово, внимание, доброта."},
+    {num:31,text:"Душа говорит чувствами. Что чувствуешь сейчас?",practice:"Побудь с этим."},
+    {num:32,text:"Ответы внутри. Какой уже есть, но не слышишь?",practice:"«Что знаю о себе?»"},
+    {num:33,text:"Свет не исчезает. Что светится в темноте?",practice:"Вспомни, когда не сдался."},
+    {num:34,text:"Прошлое — чтобы отпустить. Что простить?",practice:"«Вижу. Освобождаю»."},
+    {num:35,text:"Перестаешь прятаться — душа дышит. Что бы сделал?",practice:"Страх тает."},
+    {num:36,text:"Каждое утро — начать сначала. Что начать сегодня?",practice:"Свежесть нового дня."},
+    {num:37,text:"Душа знает куда идти. Какой тихий зов?",practice:"Доверься. Первый шаг."},
+    {num:38,text:"Чудо — ты сам. В чем волшебство сегодня?",practice:"Руки, дыхание, мир."},
+    {num:39,text:"Место внутри, где спокоен?",practice:"Найди. Оно всегда рядом."},
+    {num:40,text:"Любовь — принятие. Кого принять сегодня?",practice:"Не менять — любить."},
+    {num:41,text:"Внутренний свет — буря очищения. Где совершенство?",practice:"Вспомни перемены."},
+    {num:42,text:"Энергия — зеркало. Как реагируешь на раздражение?",practice:"«Что я вижу в себе?»"},
+    {num:43,text:"Быть собой — неудобно. Где проявить смелость?",practice:"Истина — сила Жизни."},
+    {num:44,text:"Вскрываешь ложь взглядом. Умеешь с Любовью?",practice:"Как поступить иначе?"},
+    {num:45,text:"Сила Матери очищает через боль. Где она в тебе?",practice:"«Жизнь мягкая и сильная»."},
+    {num:46,text:"Дар — осветить правду. Как принять без вины?",practice:"Правда через сердце."},
+    {num:47,text:"Не обязан быть удобным. Какую силу прячешь?",practice:"«Я — пробуждение Жизни!»"},
+    {num:48,text:"Входишь — неистинное рушится. Что чувствуешь?",practice:"Это благословение."},
+    {num:49,text:"Боль мира острее. Где чужую тьму за свою?",practice:"Возвращай Источнику."},
+    {num:50,text:"Любовь будит спящих. Готов быть проводником?",practice:"«Доверяю силе. Она служит Жизни»."}
 ];
 
-// ===== GAME LOGIC =====
+// ====== GAME LOGIC ======
 function showJoinField() {
     document.getElementById('joinField').classList.remove('hidden');
 }
@@ -537,11 +441,7 @@ function showJoinField() {
 function createGame() {
     const nameInput = document.getElementById('playerNameInput');
     if (!nameInput) return;
-    myName = nameInput.value.trim();
-    if (!myName) {
-        showToast('Введите имя!');
-        return;
-    }
+    myName = nameInput.value.trim() || 'Ведущий';
     localStorage.setItem('starGamePlayerName', myName);
 
     if (!db) {
@@ -554,9 +454,11 @@ function createGame() {
 
     showStatus('⏳ Создаю комнату...', 'waiting');
 
+    // Host is created separately from players
     const newRoomData = {
         code: code,
         hostId: myId,
+        hostName: myName,
         players: {},
         turnIndex: 0,
         state: 'waiting_roll',
@@ -564,9 +466,9 @@ function createGame() {
         isSecondRoll: false,
         helpTarget: null,
         currentCard: null,
-        log: []
+        log: [],
+        createdAt: Date.now()
     };
-    newRoomData.players[myId] = { name: myName, energy: 0, talents: [], projects: [] };
 
     db.ref('rooms/' + code).set(newRoomData)
         .then(() => {
@@ -576,13 +478,15 @@ function createGame() {
             showStatus('✅ Комната создана! Код: ' + code, 'success');
             
             // Setup disconnect handler
-            db.ref('rooms/' + code + '/players/' + myId).onDisconnect().remove();
+            db.ref('rooms/' + code).onDisconnect().remove();
 
             setTimeout(() => {
                 document.getElementById('startScreen').classList.add('hidden');
                 document.getElementById('gameApp').classList.remove('hidden');
                 document.getElementById('gameRoomCodeDisplay').textContent = code;
-                showToast('Комната создана! Код: ' + code);
+                document.getElementById('hostBadge').classList.remove('hidden');
+                document.getElementById('hostControls').classList.remove('hidden');
+                showToast('Комната создана! Вы — Ведущий 🎭');
                 listenToRoom();
             }, 500);
         })
@@ -616,10 +520,14 @@ function joinGame() {
         .then(snapshot => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
+                // Check if already joined
                 if (!data.players[myId]) {
-                    return db.ref('rooms/' + code + '/players/' + myId).set({ name: myName, energy: 0, talents: [], projects: [] }).then(() => {
-                        // Setup disconnect handler for joiner too
-                        db.ref('rooms/' + code + '/players/' + myId).onDisconnect().remove();
+                    return db.ref('rooms/' + code + '/players/' + myId).set({ 
+                        name: myName, 
+                        energy: 0, 
+                        talents: [], 
+                        projects: [],
+                        joinedAt: Date.now()
                     });
                 }
             } else {
@@ -629,11 +537,11 @@ function joinGame() {
         })
         .then(() => {
             roomId = code;
-            isHost = false; // By default false, will check hostId in listener
+            isHost = false;
             document.getElementById('startScreen').classList.add('hidden');
             document.getElementById('gameApp').classList.remove('hidden');
             document.getElementById('gameRoomCodeDisplay').textContent = code;
-            showToast('Вы подключились!');
+            showToast('Вы подключились как Игрок! 🎮');
             listenToRoom();
         })
         .catch(err => {
@@ -650,12 +558,27 @@ function listenToRoom() {
     const roomRef = db.ref('rooms/' + roomId);
     unsubscribe = roomRef.on('value', snapshot => {
         if (!snapshot.exists()) {
-            showToast('Комната удалена');
-            location.reload();
+            if (isHost) {
+                showToast('Комната удалена');
+                location.reload();
+            } else {
+                showToast('Комната закрыта Ведущим');
+                setTimeout(() => location.reload(), 2000);
+            }
             return;
         }
         roomData = snapshot.val();
         isHost = (roomData.hostId === myId);
+        
+        // Update host badge visibility
+        if (isHost) {
+            document.getElementById('hostBadge').classList.remove('hidden');
+            document.getElementById('hostControls').classList.remove('hidden');
+        } else {
+            document.getElementById('hostBadge').classList.add('hidden');
+            document.getElementById('hostControls').classList.add('hidden');
+        }
+        
         renderUI(roomData);
     });
 }
@@ -668,52 +591,79 @@ function getDeckName(type) {
     return 'Карта';
 }
 
+function getPlayerList() {
+    if (!roomData || !roomData.players) return [];
+    return Object.keys(roomData.players).map(id => ({ id, ...roomData.players[id] }));
+}
+
+function getCurrentTurnPlayer() {
+    const players = getPlayerList();
+    if (players.length === 0) return null;
+    const idx = roomData.turnIndex % players.length;
+    return players[idx];
+}
+
 function renderUI(data) {
     if (!data) return;
 
     let totalE = 0;
-    const pKeys = Object.keys(data.players || {});
-    pKeys.forEach(pid => {
-        if (data.players[pid]) totalE += (data.players[pid].energy || 0);
-    });
+    const players = getPlayerList();
+    players.forEach(p => { totalE += (p.energy || 0); });
     document.getElementById('totalEnergy').textContent = totalE;
     document.getElementById('totalCards').textContent = (data.log || []).length;
 
     const bar = document.getElementById('playersBar');
     bar.innerHTML = '';
-    const turnPlayerId = pKeys.length > 0 ? pKeys[data.turnIndex % pKeys.length] : '';
     
-    pKeys.forEach(pid => {
-        const p = data.players[pid];
-        if (!p) return;
+    // Show host first
+    const hostChip = document.createElement('div');
+    hostChip.className = 'player-chip host';
+    hostChip.innerHTML = '<span class="host-icon">👑</span>' + (data.hostName || 'Ведущий');
+    bar.appendChild(hostChip);
+    
+    const turnPlayer = getCurrentTurnPlayer();
+    
+    // Show players
+    players.forEach(p => {
         const div = document.createElement('div');
-        div.className = 'player-chip ' + (pid === turnPlayerId ? 'active' : '');
-        div.textContent = (pid === myId ? '👤 ' : '👥 ') + p.name + ' (' + (p.energy || 0) + '⭐)';
+        div.className = 'player-chip ' + (turnPlayer && turnPlayer.id === p.id ? 'active' : '');
+        div.innerHTML = (p.id === myId ? '👤 ' : '👥 ') + p.name + ' (' + (p.energy || 0) + '⭐)';
         bar.appendChild(div);
     });
 
     const rollBtn = document.getElementById('rollBtn');
     const msg = document.getElementById('rollMessage');
 
-    // Logic for button state
+    // Logic for button state - players can roll when it's their turn
     if (data.state === 'waiting_roll') {
-        if (turnPlayerId === myId && isHost) {
+        if (turnPlayer && turnPlayer.id === myId) {
             rollBtn.disabled = false;
             rollBtn.textContent = '🎲 БРОСИТЬ КУБИК';
-            msg.textContent = 'Твой ход, ' + (data.players[myId] ? data.players[myId].name : '') + '!';
+            rollBtn.classList.remove('hidden');
+            msg.textContent = 'Твой ход, ' + myName + '!';
+        } else if (isHost) {
+            // Host can force roll for current player
+            rollBtn.disabled = true;
+            rollBtn.textContent = '🎲 Ожидание...';
+            rollBtn.classList.add('hidden');
+            const tName = turnPlayer ? turnPlayer.name : '...';
+            msg.textContent = 'Ходит ' + tName + '... (Вы можете использовать панель Ведущего)';
         } else {
             rollBtn.disabled = true;
             rollBtn.textContent = '🎲 Ждём хода...';
-            const tName = data.players[turnPlayerId] ? data.players[turnPlayerId].name : '...';
+            rollBtn.classList.remove('hidden');
+            const tName = turnPlayer ? turnPlayer.name : '...';
             msg.textContent = 'Ходит ' + tName + '...';
         }
     } else if (data.state === 'rolling') {
         rollBtn.disabled = true;
         rollBtn.textContent = 'Кубик летит...';
+        rollBtn.classList.remove('hidden');
         msg.textContent = 'Кубик крутится...';
     } else {
         rollBtn.disabled = true;
         rollBtn.textContent = 'Читаем карту...';
+        rollBtn.classList.add('hidden');
         msg.textContent = 'Внимай!';
     }
 
@@ -742,7 +692,7 @@ function renderUI(data) {
         actionsArea.classList.add('hidden');
     }
 
-    if (data.players[myId]) {
+    if (data.players && data.players[myId]) {
         renderList('myTalentsList', data.players[myId].talents, 'talent');
         renderList('myProjectsList', data.players[myId].projects, 'project');
     }
@@ -757,17 +707,23 @@ function renderList(id, arr, type) {
     }
     arr.forEach(txt => {
         const li = document.createElement('li');
-        li.innerHTML = '<span>' + (type === 'talent' ? '💎 ' : '') + txt + '</span>';
+        li.innerHTML = '<span>' + (type === 'talent' ? '💎 ' : '🚀 ') + txt + '</span>';
         list.appendChild(li);
     });
 }
 
 function requestRoll() {
-    if (!isHost || !roomData || !db) return;
-    const pKeys = Object.keys(roomData.players || {});
-    const turnPlayerId = pKeys[roomData.turnIndex % pKeys.length];
-    if (turnPlayerId !== myId) return;
+    if (!roomData || !db) return;
+    const turnPlayer = getCurrentTurnPlayer();
+    if (!turnPlayer || turnPlayer.id !== myId) {
+        showToast('Не ваш ход!');
+        return;
+    }
 
+    performRoll();
+}
+
+function performRoll() {
     playSound('roll');
     const diceCube = document.getElementById('diceCube');
     diceCube.style.transform = 'rotateX(' + (Math.random() * 360) + 'deg) rotateY(' + (Math.random() * 360) + 'deg) rotateZ(' + (Math.random() * 360) + 'deg)';
@@ -832,22 +788,72 @@ function doDrawCard(roll) {
 }
 
 function nextTurn() {
-    if (!isHost || !db) return;
-    const pKeys = Object.keys(roomData.players || {});
-    const nextIdx = (roomData.turnIndex + 1) % pKeys.length;
+    if (!isHost || !db) { showToast('Только Ведущий может завершить ход'); return; }
+    const players = getPlayerList();
+    if (players.length === 0) return;
+    const nextIdx = (roomData.turnIndex + 1) % players.length;
     db.ref('rooms/' + roomId).update({
         state: 'waiting_roll',
         turnIndex: nextIdx,
         currentCard: null,
         helpTarget: null
     });
+    showToast('Ход передан!');
+}
+
+// ====== HOST ADMIN FUNCTIONS ======
+function forceRoll() {
+    if (!isHost || !db) { showToast('Только Ведущий'); return; }
+    const turnPlayer = getCurrentTurnPlayer();
+    if (!turnPlayer) { showToast('Нет игроков'); return; }
+    showToast('Бросок за ' + turnPlayer.name);
+    // Host can't directly roll, but can prompt
+    db.ref('rooms/' + roomId + '/state').set('waiting_roll');
+}
+
+function skipTurn() {
+    if (!isHost || !db) { showToast('Только Ведущий'); return; }
+    const players = getPlayerList();
+    if (players.length === 0) return;
+    const nextIdx = (roomData.turnIndex + 1) % players.length;
+    db.ref('rooms/' + roomId).update({
+        state: 'waiting_roll',
+        turnIndex: nextIdx,
+        currentCard: null,
+        helpTarget: null,
+        isSecondRoll: false
+    });
+    showToast('Ход пропущен');
+}
+
+function resetGame() {
+    if (!isHost || !db) { showToast('Только Ведущий'); return; }
+    if (!confirm('Сбросить всю игру? Это действие необратимо!')) return;
+    db.ref('rooms/' + roomId).update({
+        turnIndex: 0,
+        state: 'waiting_roll',
+        dice: 0,
+        isSecondRoll: false,
+        helpTarget: null,
+        currentCard: null,
+        log: []
+    });
+    // Reset all players
+    const players = getPlayerList();
+    players.forEach(p => {
+        db.ref('rooms/' + roomId + '/players/' + p.id).update({
+            energy: 0,
+            talents: [],
+            projects: []
+        });
+    });
+    showToast('Игра сброшена');
 }
 
 function forceSync() {
     if (!isHost || !db) return;
-    // Force state to waiting_roll and increment turn
-    const pKeys = Object.keys(roomData.players || {});
-    const nextIdx = (roomData.turnIndex + 1) % pKeys.length;
+    const players = getPlayerList();
+    const nextIdx = (roomData.turnIndex + 1) % (players.length || 1);
     db.ref('rooms/' + roomId).update({
         state: 'waiting_roll',
         turnIndex: nextIdx,
@@ -858,7 +864,7 @@ function forceSync() {
     showToast('🔄 Синхронизировано!');
 }
 
-// ===== MODALS =====
+// ====== MODALS ======
 let inputType = '';
 
 function openInputModal(type) {
@@ -875,8 +881,8 @@ function closeModal() {
 function confirmInput() {
     const val = document.getElementById('modalInput').value.trim();
     if (!val) { showToast('Введите текст!'); return; }
-    if (!isHost) { showToast('Только Ведущий может записывать'); return; }
     if (!db) return;
+    if (!roomData.players[myId]) { showToast('Вы не в игре'); return; }
 
     const path = 'players/' + myId + '/' + (inputType === 'talent' ? 'talents' : 'projects');
     db.ref('rooms/' + roomId + '/' + path).push(val);
@@ -897,19 +903,22 @@ function showHelpModal() {
     if (!isHost) return;
     const grid = document.getElementById('helpPlayerGrid');
     grid.innerHTML = '';
-    Object.keys(roomData.players || {}).forEach(pid => {
-        if (pid === myId) return;
-        const p = roomData.players[pid];
+    const players = getPlayerList();
+    players.forEach(p => {
+        if (p.id === myId) return;
         const btn = document.createElement('button');
         btn.className = 'player-select-btn';
         btn.textContent = p.name;
         btn.onclick = () => {
-            if (db) db.ref('rooms/' + roomId).update({ helpTarget: pid });
+            if (db) db.ref('rooms/' + roomId).update({ helpTarget: p.id });
             document.getElementById('helpModal').classList.remove('active');
             showToast('Помощь для ' + p.name);
         };
         grid.appendChild(btn);
     });
+    if (players.length <= 1) {
+        grid.innerHTML = '<p style="color:var(--text-muted);">Нет других игроков</p>';
+    }
     document.getElementById('helpModal').classList.add('active');
 }
 
@@ -917,34 +926,83 @@ function closeHelpModal() {
     document.getElementById('helpModal').classList.remove('active');
 }
 
-// Add Next and Sync buttons
-const actionsAreaEl = document.getElementById('actionsArea');
-if (actionsAreaEl) {
-    const nextBtn = document.createElement('button');
-    nextBtn.className = 'btn btn-primary';
-    nextBtn.textContent = 'Далее ▶';
-    nextBtn.onclick = nextTurn;
-    actionsAreaEl.appendChild(nextBtn);
-
-    // Add Sync Button only for Host
-    if (isHost) {
-        const syncBtn = document.createElement('button');
-        syncBtn.className = 'btn btn-danger';
-        syncBtn.textContent = '🔄 Синхронизация';
-        syncBtn.onclick = forceSync;
-        actionsAreaEl.appendChild(syncBtn);
-    }
+// ====== UTILS ======
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-// Enter key handlers
-const modalInputEl = document.getElementById('modalInput');
-if (modalInputEl) modalInputEl.addEventListener('keypress', e => { if (e.key === 'Enter') confirmInput(); });
-const joinCodeEl = document.getElementById('joinCodeInput');
-if (joinCodeEl) joinCodeEl.addEventListener('keypress', e => { if (e.key === 'Enter') joinGame(); });
+function showStatus(msg, type) {
+    const el = document.getElementById('statusInfo');
+    el.textContent = msg;
+    el.className = type;
+    el.classList.remove('hidden');
+}
 
-// Close modals on overlay click
-document.querySelectorAll('.modal-overlay').forEach(ov => {
-    ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('active'); });
+function playSound(type) {
+    // Placeholder for sound effects
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        if (type === 'roll') {
+            osc.frequency.value = 400;
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.2);
+        } else if (type === 'card') {
+            osc.frequency.value = 600;
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+        } else if (type === 'energy') {
+            osc.frequency.value = 800;
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.15);
+        }
+    } catch(e) {}
+}
+
+// ====== INITIALIZATION ======
+window.addEventListener('load', () => {
+    // Create starfield
+    const starfield = document.getElementById('starfield');
+    for (let i = 0; i < 150; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = Math.random() * 3 + 1 + 'px';
+        star.style.height = star.style.width;
+        star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+        star.style.setProperty('--min-opacity', Math.random() * 0.5 + 0.2);
+        starfield.appendChild(star);
+    }
+
+    // Load saved name
+    const savedName = localStorage.getItem('starGamePlayerName');
+    if (savedName && document.getElementById('playerNameInput')) {
+        document.getElementById('playerNameInput').value = savedName;
+    }
+
+    // Enter key handlers
+    const modalInputEl = document.getElementById('modalInput');
+    if (modalInputEl) modalInputEl.addEventListener('keypress', e => { if (e.key === 'Enter') confirmInput(); });
+    const joinCodeEl = document.getElementById('joinCodeInput');
+    if (joinCodeEl) joinCodeEl.addEventListener('keypress', e => { if (e.key === 'Enter') joinGame(); });
+
+    // Close modals on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(ov => {
+        ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('active'); });
+    });
 });
 </script>
 </body>
