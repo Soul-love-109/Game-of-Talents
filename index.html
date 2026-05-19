@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>✨ Зажги Свою Звезду</title>
+<title>✨ Зажги Свою Звезду | Онлайн</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&family=Nunito:wght@300;400;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -574,6 +574,10 @@ function createGame() {
             roomId = code;
             isHost = true;
             showStatus('✅ Комната создана! Код: ' + code, 'success');
+            
+            // Setup disconnect handler
+            db.ref('rooms/' + code + '/players/' + myId).onDisconnect().remove();
+
             setTimeout(() => {
                 document.getElementById('startScreen').classList.add('hidden');
                 document.getElementById('gameApp').classList.remove('hidden');
@@ -613,7 +617,10 @@ function joinGame() {
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 if (!data.players[myId]) {
-                    return db.ref('rooms/' + code + '/players/' + myId).set({ name: myName, energy: 0, talents: [], projects: [] });
+                    return db.ref('rooms/' + code + '/players/' + myId).set({ name: myName, energy: 0, talents: [], projects: [] }).then(() => {
+                        // Setup disconnect handler for joiner too
+                        db.ref('rooms/' + code + '/players/' + myId).onDisconnect().remove();
+                    });
                 }
             } else {
                 showStatus('❌ Комната не найдена', 'error');
@@ -622,7 +629,7 @@ function joinGame() {
         })
         .then(() => {
             roomId = code;
-            isHost = false;
+            isHost = false; // By default false, will check hostId in listener
             document.getElementById('startScreen').classList.add('hidden');
             document.getElementById('gameApp').classList.remove('hidden');
             document.getElementById('gameRoomCodeDisplay').textContent = code;
@@ -648,6 +655,7 @@ function listenToRoom() {
             return;
         }
         roomData = snapshot.val();
+        isHost = (roomData.hostId === myId);
         renderUI(roomData);
     });
 }
@@ -674,6 +682,7 @@ function renderUI(data) {
     const bar = document.getElementById('playersBar');
     bar.innerHTML = '';
     const turnPlayerId = pKeys.length > 0 ? pKeys[data.turnIndex % pKeys.length] : '';
+    
     pKeys.forEach(pid => {
         const p = data.players[pid];
         if (!p) return;
@@ -686,6 +695,7 @@ function renderUI(data) {
     const rollBtn = document.getElementById('rollBtn');
     const msg = document.getElementById('rollMessage');
 
+    // Logic for button state
     if (data.state === 'waiting_roll') {
         if (turnPlayerId === myId && isHost) {
             rollBtn.disabled = false;
@@ -833,6 +843,21 @@ function nextTurn() {
     });
 }
 
+function forceSync() {
+    if (!isHost || !db) return;
+    // Force state to waiting_roll and increment turn
+    const pKeys = Object.keys(roomData.players || {});
+    const nextIdx = (roomData.turnIndex + 1) % pKeys.length;
+    db.ref('rooms/' + roomId).update({
+        state: 'waiting_roll',
+        turnIndex: nextIdx,
+        currentCard: null,
+        helpTarget: null,
+        isSecondRoll: false
+    });
+    showToast('🔄 Синхронизировано!');
+}
+
 // ===== MODALS =====
 let inputType = '';
 
@@ -892,7 +917,7 @@ function closeHelpModal() {
     document.getElementById('helpModal').classList.remove('active');
 }
 
-// Add Next button
+// Add Next and Sync buttons
 const actionsAreaEl = document.getElementById('actionsArea');
 if (actionsAreaEl) {
     const nextBtn = document.createElement('button');
@@ -900,6 +925,15 @@ if (actionsAreaEl) {
     nextBtn.textContent = 'Далее ▶';
     nextBtn.onclick = nextTurn;
     actionsAreaEl.appendChild(nextBtn);
+
+    // Add Sync Button only for Host
+    if (isHost) {
+        const syncBtn = document.createElement('button');
+        syncBtn.className = 'btn btn-danger';
+        syncBtn.textContent = '🔄 Синхронизация';
+        syncBtn.onclick = forceSync;
+        actionsAreaEl.appendChild(syncBtn);
+    }
 }
 
 // Enter key handlers
@@ -915,3 +949,4 @@ document.querySelectorAll('.modal-overlay').forEach(ov => {
 </script>
 </body>
 </html>
+
