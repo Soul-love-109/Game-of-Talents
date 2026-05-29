@@ -45,7 +45,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-
 .players-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;}
 .player-chip{padding:8px 15px;background:rgba(26,26,62,.6);border-radius:20px;border:2px solid transparent;transition:all .3s;font-size:.9rem;display:flex;align-items:center;gap:6px;}
 .player-chip.active{border-color:var(--gold);background:rgba(255,215,0,.1);box-shadow:0 0 10px rgba(255,215,0,.2);color:var(--gold);}
-.player-chip.host{border-color:var(--host-accent);background:rgba(255,107,107,.1);}
+.player-chip.host-chip{border-color:var(--host-accent);background:rgba(255,107,107,.1);}
 .player-chip .host-icon{color:var(--host-accent);}
 .dice-area{margin:20px 0;perspective:600px;width:110px;height:110px;cursor:pointer;position:relative;}
 .dice-cube{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.34,1.56,.64,1);}
@@ -94,6 +94,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-
 #statusInfo.error{background:rgba(255,80,80,.15);border-color:rgba(255,80,80,.3);color:#ff6b6b;}
 #statusInfo.success{background:rgba(75,255,142,.1);border-color:rgba(75,255,142,.3);color:var(--help-accent);}
 #statusInfo.waiting{background:rgba(255,215,0,.1);border-color:rgba(255,215,0,.3);color:var(--gold);}
+.share-box{background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.3);border-radius:12px;padding:12px;margin-top:12px;font-size:.85rem;color:var(--gold);word-break:break-all;}
 @media(max-width:600px){
 .lists-section{grid-template-columns:1fr;}
 .dice-area{width:80px;height:80px;}
@@ -176,12 +177,14 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-
             <button class="btn btn-secondary" onclick="openInputModal('talent')">💎 Талант</button>
             <button class="btn btn-secondary" onclick="openInputModal('project')">🚀 Проект</button>
             <button class="btn btn-help" onclick="giveEnergy()">⭐ Энергия +1</button>
-            <button class="btn btn-primary" onclick="nextTurn()">Далее ▶</button>
+            <button class="btn btn-primary" id="nextTurnBtn" onclick="nextTurn()">Далее ▶</button>
         </div>
         
         <div class="host-controls hidden" id="hostControls">
             <h3>👑 Панель Ведущего</h3>
+            <div id="shareInfo" style="margin-bottom:10px;"></div>
             <div class="host-buttons">
+                <button class="btn btn-host" onclick="copyRoomLink()">🔗 Скопировать ссылку</button>
                 <button class="btn btn-host" onclick="forceRoll()">🎲 Бросить за игрока</button>
                 <button class="btn btn-host" onclick="skipTurn()">⏭ Пропустить ход</button>
                 <button class="btn btn-host" onclick="resetGame()">🔄 Сбросить игру</button>
@@ -201,7 +204,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-
         </div>
     </div>
     <div class="game-footer">
-        <p>🌌 Игра «Зажги Свою Звезду» | Версия 2.0</p>
+        <p>🌌 Игра «Зажги Свою Звезду» | Версия 2.1</p>
         <a href="https://t.me/ILiveAndILove" target="_blank" class="telegram-btn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.054 5.56-5.022c.242-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/></svg>
             Поддержка
@@ -232,7 +235,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg-dark);color:var(--text-
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script>
-// ====== FIREBASE CONFIG - ИСПРАВЛЕНО ======
+// ====== FIREBASE CONFIG ======
 const firebaseConfig = {
     apiKey: "AIzaSyA8GmjIs2T-yAAjgwg7urg9W0eXVEma-WY",
     authDomain: "soul-love-109.firebaseapp.com",
@@ -243,7 +246,6 @@ const firebaseConfig = {
     appId: "1:561989435512:web:c03ee8536507036db26d8d"
 };
 
-// Initialize Firebase
 let db = null;
 try {
     firebase.initializeApp(firebaseConfig);
@@ -259,7 +261,7 @@ let myName = '';
 let roomId = null;
 let isHost = false;
 let roomData = null;
-let unsubscribe = null;
+let roomListener = null;
 
 // ====== DECKS ======
 const TREASURE_DECK = [
@@ -428,6 +430,7 @@ const STRENGTH_DECK = [
 ];
 
 // ====== GAME LOGIC ======
+
 function showJoinField() {
     document.getElementById('joinField').classList.remove('hidden');
 }
@@ -444,47 +447,46 @@ function createGame() {
     }
 
     const code = Math.floor(1000 + Math.random() * 9000).toString();
-    console.log('Creating room:', code);
-
     showStatus('⏳ Создаю комнату...', 'waiting');
 
+    // Ведущий сразу добавляется как первый игрок
     const newRoomData = {
         code: code,
         hostId: myId,
         hostName: myName,
-        players: {},
+        players: {
+            [myId]: {
+                name: myName,
+                energy: 0,
+                talents: {},
+                projects: {},
+                joinedAt: Date.now(),
+                isHost: true
+            }
+        },
         turnIndex: 0,
         state: 'waiting_roll',
         dice: 0,
         isSecondRoll: false,
         helpTarget: null,
         currentCard: null,
-        log: [],
         createdAt: Date.now()
     };
 
     db.ref('rooms/' + code).set(newRoomData)
         .then(() => {
-            console.log('Room created:', code);
             roomId = code;
             isHost = true;
-            showStatus('✅ Комната создана! Код: ' + code, 'success');
-            
-            db.ref('rooms/' + code).onDisconnect().remove();
 
-            setTimeout(() => {
-                document.getElementById('startScreen').classList.add('hidden');
-                document.getElementById('gameApp').classList.remove('hidden');
-                document.getElementById('gameRoomCodeDisplay').textContent = code;
-                document.getElementById('hostBadge').classList.remove('hidden');
-                document.getElementById('hostControls').classList.remove('hidden');
-                showToast('Комната создана! Вы — Ведущий 🎭');
-                listenToRoom();
-            }, 500);
+            // При отключении удаляем только себя, не всю комнату
+            db.ref('rooms/' + code + '/players/' + myId).onDisconnect().remove();
+
+            showStatus('✅ Комната создана! Код: ' + code, 'success');
+            setTimeout(() => enterGame(code, true), 500);
         })
         .catch(err => {
             console.error('Error creating room:', err);
-            showStatus('❌ Ошибка: ' + err.message, 'error');
+            showStatus('❌ Ошибка: ' + err.message + '. Проверьте правила Firebase.', 'error');
         });
 }
 
@@ -510,57 +512,87 @@ function joinGame() {
 
     db.ref('rooms/' + code).once('value')
         .then(snapshot => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                if (!data.players[myId]) {
-                    return db.ref('rooms/' + code + '/players/' + myId).set({ 
-                        name: myName, 
-                        energy: 0, 
-                        talents: [], 
-                        projects: [],
-                        joinedAt: Date.now()
-                    });
-                }
-            } else {
-                showStatus('❌ Комната не найдена', 'error');
+            if (!snapshot.exists()) {
+                showStatus('❌ Комната не найдена. Проверьте код.', 'error');
                 return Promise.reject('not found');
             }
+            return db.ref('rooms/' + code + '/players/' + myId).set({
+                name: myName,
+                energy: 0,
+                talents: {},
+                projects: {},
+                joinedAt: Date.now(),
+                isHost: false
+            });
         })
         .then(() => {
             roomId = code;
             isHost = false;
-            document.getElementById('startScreen').classList.add('hidden');
-            document.getElementById('gameApp').classList.remove('hidden');
-            document.getElementById('gameRoomCodeDisplay').textContent = code;
-            showToast('Вы подключились как Игрок! 🎮');
-            listenToRoom();
+            // При отключении удаляем только себя
+            db.ref('rooms/' + code + '/players/' + myId).onDisconnect().remove();
+            enterGame(code, false);
         })
         .catch(err => {
             if (err !== 'not found') {
                 console.error('Join error:', err);
-                showStatus('❌ Ошибка: ' + err.message, 'error');
+                showStatus('❌ Ошибка подключения: ' + (err.message || err), 'error');
             }
         });
 }
 
+function enterGame(code, hostFlag) {
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('gameApp').classList.remove('hidden');
+    document.getElementById('gameRoomCodeDisplay').textContent = code;
+
+    if (hostFlag) {
+        document.getElementById('hostBadge').classList.remove('hidden');
+        document.getElementById('hostControls').classList.remove('hidden');
+        // Показываем ссылку для игроков
+        const shareEl = document.getElementById('shareInfo');
+        const link = window.location.href.split('?')[0];
+        shareEl.innerHTML = '<div style="font-size:.8rem;color:var(--text-muted);margin-bottom:6px;">Код комнаты для игроков:</div><div class="share-box">Код: <strong>' + code + '</strong></div>';
+        showToast('Комната создана! Вы — Ведущий 🎭');
+    } else {
+        showToast('Вы подключились как Игрок! 🎮');
+    }
+
+    listenToRoom();
+}
+
+function copyRoomLink() {
+    const text = 'Код комнаты: ' + roomId + '\nЗайди в игру и введи этот код!';
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => showToast('Код скопирован! 📋'));
+    } else {
+        showToast('Код: ' + roomId);
+    }
+}
+
 function listenToRoom() {
-    if (unsubscribe) unsubscribe();
+    if (roomListener) {
+        db.ref('rooms/' + roomId).off('value', roomListener);
+    }
     if (!db) return;
-    const roomRef = db.ref('rooms/' + roomId);
-    unsubscribe = roomRef.on('value', snapshot => {
+
+    roomListener = db.ref('rooms/' + roomId).on('value', snapshot => {
         if (!snapshot.exists()) {
-            if (isHost) {
-                showToast('Комната удалена');
-                location.reload();
-            } else {
-                showToast('Комната закрыта Ведущим');
-                setTimeout(() => location.reload(), 2000);
-            }
+            showToast('Комната закрыта');
+            setTimeout(() => location.reload(), 2000);
             return;
         }
         roomData = snapshot.val();
+
+        // Проверяем, не сместился ли turnIndex на несуществующего игрока
+        const players = getPlayerList();
+        if (players.length > 0 && roomData.turnIndex >= players.length) {
+            if (isHost) {
+                db.ref('rooms/' + roomId + '/turnIndex').set(0);
+            }
+        }
+
         isHost = (roomData.hostId === myId);
-        
+
         if (isHost) {
             document.getElementById('hostBadge').classList.remove('hidden');
             document.getElementById('hostControls').classList.remove('hidden');
@@ -568,7 +600,7 @@ function listenToRoom() {
             document.getElementById('hostBadge').classList.add('hidden');
             document.getElementById('hostControls').classList.add('hidden');
         }
-        
+
         renderUI(roomData);
     });
 }
@@ -589,7 +621,7 @@ function getPlayerList() {
 function getCurrentTurnPlayer() {
     const players = getPlayerList();
     if (players.length === 0) return null;
-    const idx = roomData.turnIndex % players.length;
+    const idx = (roomData.turnIndex || 0) % players.length;
     return players[idx];
 }
 
@@ -600,27 +632,27 @@ function renderUI(data) {
     const players = getPlayerList();
     players.forEach(p => { totalE += (p.energy || 0); });
     document.getElementById('totalEnergy').textContent = totalE;
-    document.getElementById('totalCards').textContent = (data.log || []).length;
+    document.getElementById('totalCards').textContent = data.cardCount || 0;
 
+    // Панель игроков
     const bar = document.getElementById('playersBar');
     bar.innerHTML = '';
-    
-    const hostChip = document.createElement('div');
-    hostChip.className = 'player-chip host';
-    hostChip.innerHTML = '<span class="host-icon">👑</span>' + (data.hostName || 'Ведущий');
-    bar.appendChild(hostChip);
-    
     const turnPlayer = getCurrentTurnPlayer();
-    
+
     players.forEach(p => {
         const div = document.createElement('div');
-        div.className = 'player-chip ' + (turnPlayer && turnPlayer.id === p.id ? 'active' : '');
-        div.innerHTML = (p.id === myId ? '👤 ' : '👥 ') + p.name + ' (' + (p.energy || 0) + '⭐)';
+        const isActive = turnPlayer && turnPlayer.id === p.id;
+        const isMe = p.id === myId;
+        const isHostPlayer = p.id === data.hostId;
+        div.className = 'player-chip' + (isActive ? ' active' : '') + (isHostPlayer ? ' host-chip' : '');
+        div.innerHTML = (isHostPlayer ? '👑 ' : (isMe ? '👤 ' : '👥 ')) + p.name + ' (' + (p.energy || 0) + '⭐)';
         bar.appendChild(div);
     });
 
+    // Кубик и кнопки
     const rollBtn = document.getElementById('rollBtn');
     const msg = document.getElementById('rollMessage');
+    const nextBtn = document.getElementById('nextTurnBtn');
 
     if (data.state === 'waiting_roll') {
         if (turnPlayer && turnPlayer.id === myId) {
@@ -630,10 +662,9 @@ function renderUI(data) {
             msg.textContent = 'Твой ход, ' + myName + '!';
         } else if (isHost) {
             rollBtn.disabled = true;
-            rollBtn.textContent = '🎲 Ожидание...';
             rollBtn.classList.add('hidden');
             const tName = turnPlayer ? turnPlayer.name : '...';
-            msg.textContent = 'Ходит ' + tName + '... (Вы можете использовать панель Ведущего)';
+            msg.textContent = 'Ходит ' + tName + '... (панель Ведущего активна)';
         } else {
             rollBtn.disabled = true;
             rollBtn.textContent = '🎲 Ждём хода...';
@@ -648,11 +679,11 @@ function renderUI(data) {
         msg.textContent = 'Кубик крутится...';
     } else {
         rollBtn.disabled = true;
-        rollBtn.textContent = 'Читаем карту...';
         rollBtn.classList.add('hidden');
         msg.textContent = 'Внимай!';
     }
 
+    // Карта
     const cardEl = document.getElementById('gameCard');
     const cardText = document.getElementById('cardText');
     const cardType = document.getElementById('cardTypeBadge');
@@ -661,7 +692,6 @@ function renderUI(data) {
     const actionsArea = document.getElementById('actionsArea');
 
     if (data.currentCard) {
-        cardEl.classList.add('visible');
         cardEl.className = 'game-card visible type-' + data.currentCard.type;
         cardText.textContent = data.currentCard.text;
         cardNum.textContent = data.currentCard.num || '?';
@@ -673,25 +703,34 @@ function renderUI(data) {
             cardPractice.classList.add('hidden');
         }
         actionsArea.classList.remove('hidden');
+
+        // Кнопку «Далее» видит только текущий игрок или ведущий
+        if (nextBtn) {
+            const canNext = isHost || (turnPlayer && turnPlayer.id === myId);
+            nextBtn.style.display = canNext ? '' : 'none';
+        }
     } else {
         cardEl.classList.remove('visible');
         actionsArea.classList.add('hidden');
     }
 
+    // Таланты и проекты
     if (data.players && data.players[myId]) {
-        renderList('myTalentsList', data.players[myId].talents, 'talent');
-        renderList('myProjectsList', data.players[myId].projects, 'project');
+        const p = data.players[myId];
+        renderList('myTalentsList', p.talents, 'talent');
+        renderList('myProjectsList', p.projects, 'project');
     }
 }
 
-function renderList(id, arr, type) {
+function renderList(id, obj, type) {
     const list = document.getElementById(id);
     list.innerHTML = '';
-    if (!arr || arr.length === 0) {
+    const items = obj ? Object.values(obj) : [];
+    if (items.length === 0) {
         list.innerHTML = '<li style="opacity:.5;justify-content:center;">Пусто</li>';
         return;
     }
-    arr.forEach(txt => {
+    items.forEach(txt => {
         const li = document.createElement('li');
         li.innerHTML = '<span>' + (type === 'talent' ? '💎 ' : '🚀 ') + txt + '</span>';
         list.appendChild(li);
@@ -705,7 +744,7 @@ function requestRoll() {
         showToast('Не ваш ход!');
         return;
     }
-
+    if (roomData.state !== 'waiting_roll') return;
     performRoll();
 }
 
@@ -759,47 +798,55 @@ function doDrawCard(roll) {
     let deck = (roll >= 1 && roll <= 3) ? TREASURE_DECK : STRENGTH_DECK;
     let type = (roll >= 1 && roll <= 3) ? 'treasure' : 'strength';
     let card = deck[Math.floor(Math.random() * deck.length)];
-    let update = {
+
+    db.ref('rooms/' + roomId).update({
         dice: roll,
         currentCard: { type: type, text: card.text, num: card.num, practice: card.practice || '' },
         state: 'showing_card',
         isSecondRoll: false,
-        helpTarget: null
-    };
-    if (!roomData || !roomData.log) update.log = [];
-    update.log.push({ ts: Date.now(), roll: roll, cardNum: card.num, text: card.text });
-    db.ref('rooms/' + roomId).update(update).then(() => {
+        helpTarget: null,
+        cardCount: (roomData.cardCount || 0) + 1
+    }).then(() => {
         playSound('card');
     });
 }
 
 function nextTurn() {
-    if (!isHost || !db) { showToast('Только Ведущий может завершить ход'); return; }
+    if (!db || !roomData) return;
+    const turnPlayer = getCurrentTurnPlayer();
+    // Завершить ход может текущий игрок или ведущий
+    if (!isHost && (!turnPlayer || turnPlayer.id !== myId)) {
+        showToast('Только текущий игрок или Ведущий');
+        return;
+    }
     const players = getPlayerList();
     if (players.length === 0) return;
-    const nextIdx = (roomData.turnIndex + 1) % players.length;
+    const nextIdx = ((roomData.turnIndex || 0) + 1) % players.length;
     db.ref('rooms/' + roomId).update({
         state: 'waiting_roll',
         turnIndex: nextIdx,
         currentCard: null,
-        helpTarget: null
+        helpTarget: null,
+        isSecondRoll: false
     });
     showToast('Ход передан!');
 }
 
 function forceRoll() {
     if (!isHost || !db) { showToast('Только Ведущий'); return; }
-    const turnPlayer = getCurrentTurnPlayer();
-    if (!turnPlayer) { showToast('Нет игроков'); return; }
-    showToast('Бросок за ' + turnPlayer.name);
-    db.ref('rooms/' + roomId + '/state').set('waiting_roll');
+    db.ref('rooms/' + roomId).update({
+        state: 'waiting_roll',
+        currentCard: null,
+        isSecondRoll: false
+    });
+    showToast('Состояние сброшено — игрок может бросать');
 }
 
 function skipTurn() {
     if (!isHost || !db) { showToast('Только Ведущий'); return; }
     const players = getPlayerList();
     if (players.length === 0) return;
-    const nextIdx = (roomData.turnIndex + 1) % players.length;
+    const nextIdx = ((roomData.turnIndex || 0) + 1) % players.length;
     db.ref('rooms/' + roomId).update({
         state: 'waiting_roll',
         turnIndex: nextIdx,
@@ -820,14 +867,14 @@ function resetGame() {
         isSecondRoll: false,
         helpTarget: null,
         currentCard: null,
-        log: []
+        cardCount: 0
     });
     const players = getPlayerList();
     players.forEach(p => {
         db.ref('rooms/' + roomId + '/players/' + p.id).update({
             energy: 0,
-            talents: [],
-            projects: []
+            talents: {},
+            projects: {}
         });
     });
     showToast('Игра сброшена');
@@ -835,11 +882,8 @@ function resetGame() {
 
 function forceSync() {
     if (!isHost || !db) return;
-    const players = getPlayerList();
-    const nextIdx = (roomData.turnIndex + 1) % (players.length || 1);
     db.ref('rooms/' + roomId).update({
         state: 'waiting_roll',
-        turnIndex: nextIdx,
         currentCard: null,
         helpTarget: null,
         isSecondRoll: false
@@ -863,31 +907,29 @@ function closeModal() {
 function confirmInput() {
     const val = document.getElementById('modalInput').value.trim();
     if (!val) { showToast('Введите текст!'); return; }
-    if (!db) return;
-    if (!roomData.players[myId]) { showToast('Вы не в игре'); return; }
+    if (!db || !roomData) return;
+    if (!roomData.players || !roomData.players[myId]) { showToast('Вы не в игре'); return; }
 
-    const path = 'players/' + myId + '/' + (inputType === 'talent' ? 'talents' : 'projects');
-    db.ref('rooms/' + roomId + '/' + path).push(val);
-    db.ref('rooms/' + roomId + '/players/' + myId + '/energy').transaction(e => (e || 0) + 1);
+    const path = 'rooms/' + roomId + '/players/' + myId + '/' + (inputType === 'talent' ? 'talents' : 'projects');
+    db.ref(path).push(val);
     closeModal();
     showToast('Записано! +1 ⭐');
     playSound('energy');
 }
 
 function giveEnergy() {
-    if (!isHost || !db) { showToast('Только Ведущий'); return; }
+    if (!db) return;
     db.ref('rooms/' + roomId + '/players/' + myId + '/energy').transaction(e => (e || 0) + 1);
     playSound('energy');
     showToast('Энергия +1!');
 }
 
 function showHelpModal() {
-    if (!isHost) return;
     const grid = document.getElementById('helpPlayerGrid');
     grid.innerHTML = '';
     const players = getPlayerList();
-    players.forEach(p => {
-        if (p.id === myId) return;
+    const others = players.filter(p => p.id !== myId);
+    others.forEach(p => {
         const btn = document.createElement('button');
         btn.className = 'player-select-btn';
         btn.textContent = p.name;
@@ -898,7 +940,7 @@ function showHelpModal() {
         };
         grid.appendChild(btn);
     });
-    if (players.length <= 1) {
+    if (others.length === 0) {
         grid.innerHTML = '<p style="color:var(--text-muted);">Нет других игроков</p>';
     }
     document.getElementById('helpModal').classList.add('active');
@@ -933,25 +975,23 @@ function playSound(type) {
             osc.frequency.value = 400;
             gain.gain.setValueAtTime(0.1, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.2);
+            osc.start(); osc.stop(ctx.currentTime + 0.2);
         } else if (type === 'card') {
             osc.frequency.value = 600;
             gain.gain.setValueAtTime(0.1, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.3);
+            osc.start(); osc.stop(ctx.currentTime + 0.3);
         } else if (type === 'energy') {
             osc.frequency.value = 800;
             gain.gain.setValueAtTime(0.1, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.15);
+            osc.start(); osc.stop(ctx.currentTime + 0.15);
         }
     } catch(e) {}
 }
 
 window.addEventListener('load', () => {
+    // Звёзды
     const starfield = document.getElementById('starfield');
     for (let i = 0; i < 150; i++) {
         const star = document.createElement('div');
@@ -966,14 +1006,10 @@ window.addEventListener('load', () => {
     }
 
     const savedName = localStorage.getItem('starGamePlayerName');
-    if (savedName && document.getElementById('playerNameInput')) {
-        document.getElementById('playerNameInput').value = savedName;
-    }
+    if (savedName) document.getElementById('playerNameInput').value = savedName;
 
-    const modalInputEl = document.getElementById('modalInput');
-    if (modalInputEl) modalInputEl.addEventListener('keypress', e => { if (e.key === 'Enter') confirmInput(); });
-    const joinCodeEl = document.getElementById('joinCodeInput');
-    if (joinCodeEl) joinCodeEl.addEventListener('keypress', e => { if (e.key === 'Enter') joinGame(); });
+    document.getElementById('modalInput').addEventListener('keypress', e => { if (e.key === 'Enter') confirmInput(); });
+    document.getElementById('joinCodeInput').addEventListener('keypress', e => { if (e.key === 'Enter') joinGame(); });
 
     document.querySelectorAll('.modal-overlay').forEach(ov => {
         ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('active'); });
